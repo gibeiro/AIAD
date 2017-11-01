@@ -3,12 +3,14 @@ package PanicOnWallStreet;
 import jade.core.Agent;
 import jade.core.AID;
 
-public class Player extends Agent {
+public class Player{
+	public static int globalIDs = 1;
+	public final int id;
+    public String name;
 
-    public static final int INITIAL_CASH = 24;
-    public int cash = INITIAL_CASH;
-
-
-    protected void setup(){}
+    public Player(String name){
+    	this.id = Player.globalIDs++;
+    	this.name = name;
+    }
 
 }
