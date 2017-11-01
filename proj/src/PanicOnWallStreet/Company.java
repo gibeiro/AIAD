@@ -24,6 +24,9 @@ public class Company {
         private Multiplier(int m) {
             this.mult = m;
         }
+        public int value() {
+        	return mult;
+        }
     };
 
     public int price;

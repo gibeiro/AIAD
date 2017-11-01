@@ -21,6 +21,11 @@ public class Engine {
 		payment,
 		auction
 	};
+	//Player type
+	public enum PlayerType{
+		manager,
+		investor
+	};
 	//All the dices for the game(red,yellow, green and blue)
 	private static final Integer[][] DICE = {
 			{7,-7,3,-3,2,-2},
@@ -49,7 +54,8 @@ public class Engine {
 		return DICE[c.index()][i];		
 	}		
 	//List of players
-	public static List<Player> players = new ArrayList<Player>();
+	public static List<Investor> investors = new ArrayList<Investor>();
+	public static List<Manager> managers = new ArrayList<Manager>();
 	//Current phase
 	private static Phase phase;
 	//Current turn
@@ -88,7 +94,12 @@ public class Engine {
 	//Constructor
 	public Engine(){}
 	//Add new player
-	public static void addPlayer(Player p){ players.add(p); }
+	public static void addPlayer(Player p,PlayerType t){
+		if(t == PlayerType.investor) 
+			investors.add((Investor)p);
+		else managers.add((Manager)p);
+			
+	}
 	//Start/Restart game
 	public static void start(){
 		turn = 1;
@@ -100,12 +111,12 @@ public class Engine {
 		case negotiation:
 			finishNegotiation();
 			phase = Phase.investors;
-			//startInvestors();
+			startInvestors();
 			break;
 		case investors:
-			//finishInvestors();
+			finishInvestors();
 			phase = Phase.managers;
-			//startManagers();
+			startManagers();
 			break;
 		case managers:
 			//finishManagers();
@@ -152,11 +163,13 @@ public class Engine {
 		Investor investor = null;
 		Manager manager = null;
 		Company company=null;
-		for(Player p : players) {
+		for(Manager p : managers) {
 			if(p.id == idm) {
 				manager = (Manager) p;
 			}
-			if(p.id == idi) {
+		}
+		for(Investor p : investors) {
+			if(p.id == idm) {
 				investor = (Investor) p;
 			}
 		}
@@ -212,53 +225,43 @@ public class Engine {
 		}
 		return new Message(false,"There is no such proposal");
 	}
-	//TODO get proposals
+	//TODO GETTERS
 	
 	//----Investors phase methods----
 	
+	//Start investors phase
+	private static void startInvestors(){
+		fluctuate();
+		giveInvestorsIncome();
+	}
+	//Start investors phase
+	private static void finishInvestors(){
+		//NOTHING
+	}
+		
 	private static void fluctuate(){
 		for(Company.Color c = Company.Color.red; c.index() < Company.Color.NR_COLORS; c.next()){
 			pointers[c.index()] += diceRoll(c);
-			pointers[c.index()] %= 8;
+			if(pointers[c.index()] < 0) {
+				pointers[c.index()] = 0;
+			}else if(pointers[c.index()] > 7) {
+				pointers[c.index()] = 7;
+			}
+		}
+	}
+	private static void giveInvestorsIncome() {
+		for(Investor p:investors) {
+			for(Company c:p.companies) {
+				p.cash += VALUES[c.color.index()][pointers[c.color.index()]] * c.multiplier.value();
+			}
 		}
 	}
 	
-	public static void investorsIncome(){
+	//----Managers phase methods----
+	
+	private static void startManagers(){
 		
 	}
 	
-	public static void managersIncome(){
-		
-	}
-	
-	public static void startAuction(){
-		
-	}
-	
-	public static void managersPayment(){
-		
-	}
-	
-	/*private static void doTurn(){
-	switch(phase){
-		case negotiation:
-			startNegotiation();	// starts company negotiation protocol
-			finishNegotiation(); // stops company negotiation and distributes companies
-			break;
-		case investors:				
-			fluctuate();		// fluctuate the companies' values
-			investorsIncome();	// calculate the investors' income
-			break;
-		case managers:
-			managersIncome();	// calculate the managers' income
-			break;
-		case payment:
-			managersPayment();	// managers cost payment to the bank
-			break;
-		case auction:
-			startAuction();		// starts company auction protocol
-			break;
-	}
-}*/
 	
 }
