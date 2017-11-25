@@ -1,1 +1,5 @@
-"Panic on Wall Street" boardgame AI using JADE, Jason and Jadex.
+"Panic on Wall Street" boardgame AI using Jason with Jade infrastructure.
+
+To run install Eclipse Java EE
+Install Jason Eclipse plugin
+Run project

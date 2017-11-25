@@ -1,0 +1,12 @@
+MAS pows {
+
+	infrastructure: Jade
+
+	environment: Env
+
+	agents:
+		agent1 sample_agent;
+
+	aslSourcePath:
+		"src/asl";
+}
