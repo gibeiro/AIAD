@@ -3,6 +3,7 @@ APDescription.txt
 MTPs-Main-Container.txt
 .idea/
 .metadata
+.stop___MAS
 bin/
 tmp/
 *.tmp
