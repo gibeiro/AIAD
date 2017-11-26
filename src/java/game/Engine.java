@@ -102,6 +102,10 @@ public class Engine {
 	}
 	
 	private static List<Debt> debts = new ArrayList<Debt>();
+	
+	//----Variables needed for phase 5
+	//Auctioned company
+	private static Company auction;
 	//--------------GAME CYCLE---------------
 	
 	
@@ -140,15 +144,19 @@ public class Engine {
 		case payment:
 			finishPayment();
 			phase = Phase.auction;	// managers cost payment to the bank
-			//startAuction();
+			if(turn == NR_TURNS) {  //There is no auction in the last turn
+				turn++;
+				break;
+			}
+			startAuction();
 			break;
 		case auction:
-			//finishAuction();
+			finishAuction();
 			phase = Phase.negotiation;	// 
 			startNegotiation();
 			turn++;
 			break;
-	}
+		}
 	}
 	
 	
@@ -354,7 +362,7 @@ public class Engine {
 	//Pay company fee
 	public static Message payFee(int idm) {
 
-		if(phase != Phase.managers) {
+		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
 		}
 		Manager manager = null;
@@ -374,7 +382,7 @@ public class Engine {
 	}
 	//Remove a company and get 5k in return
 	public static Message removeCompany(int idm,int idc) {
-		if(phase != Phase.managers) {
+		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
 		}
 		Manager manager = null;
@@ -401,5 +409,43 @@ public class Engine {
 		return new Message(true,"");
 	}
 
+	//----Auction----
+	
+	//Start auction phase
+	private static void startAuction() {
+		
+	}
+	//Start auction phase
+	private static void finishAuction() {
+		
+	}
+	//Remove company from reserve to auction
+	public static void toAuction() {
+		int random = new Random().nextInt(reserve.size());
+		Company c = reserve.get(random);
+		reserve.remove(random);
+	}
+	//Buy company
+	public static Message buyCompany(int idm) {
+		if(phase != Phase.payment) {
+			return new Message(false,"Not in negotiation phase");
+		}
+		Manager manager = null;
+		for(Manager p : managers) {
+			if(p.id == idm) {
+				manager = (Manager) p;
+			}
+		}
+		if(manager == null) {
+			return new Message(false,"There is no such manager");
+		}
+		if(manager.cash < 5000) {
+			return new Message(false,"Not enough money");
+		}
+		manager.removeCash(5000);
+		manager.companies.add(auction);
+		auction = null;
+		return new Message(true,"");
+	}
 	
 }
