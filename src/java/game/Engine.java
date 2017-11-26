@@ -119,12 +119,12 @@ public class Engine {
 			startManagers();
 			break;
 		case managers:
-			//finishManagers();
+			finishManagers();
 			phase = Phase.payment;	// calculate the managers' income
-			//startPayment();
+			startPayment();
 			break;
 		case payment:
-			//finishPayment();
+			finishPayment();
 			phase = Phase.auction;	// managers cost payment to the bank
 			//startAuction();
 			break;
@@ -234,11 +234,11 @@ public class Engine {
 		fluctuate();
 		giveInvestorsIncome();
 	}
-	//Start investors phase
+	//Finish investors phase
 	private static void finishInvestors(){
 		//NOTHING
 	}
-		
+	//Fluctuate prices
 	private static void fluctuate(){
 		for(Company.Color c = Company.Color.red; c.index() < Company.Color.NR_COLORS; c.next()){
 			pointers[c.index()] += diceRoll(c);
@@ -249,6 +249,7 @@ public class Engine {
 			}
 		}
 	}
+	//Give income to investors
 	private static void giveInvestorsIncome() {
 		for(Investor p:investors) {
 			for(Company c:p.companies) {
@@ -259,9 +260,54 @@ public class Engine {
 	
 	//----Managers phase methods----
 	
+	//Start managers phase
 	private static void startManagers(){
-		
+		//NOTHING
+	}
+	//Finish investors phase
+	private static void finishManagers() {
+		//NOTHING
+	}
+	//Give income to managers
+	public static Message giveManagersIncome(int idm, int idi, int ammount) {
+		if(phase != Phase.managers) {
+			return new Message(false,"Not in negotiation phase");
+		}
+		Investor investor = null;
+		Manager manager = null;
+		Company company=null;
+		for(Manager p : managers) {
+			if(p.id == idm) {
+				manager = (Manager) p;
+			}
+		}
+		for(Investor p : investors) {
+			if(p.id == idm) {
+				investor = (Investor) p;
+			}
+		}
+		if(investor == null) {
+			return new Message(false,"There is no such investor");
+		}
+		if(manager == null) {
+			return new Message(false,"There is no such manager");
+		}
+		boolean transf = investor.transfer(manager, ammount);
+		if(transf) {
+			return new Message(true,"Transfer successful");
+		}else {
+			return new Message(false,"Not enough money");
+		}
 	}
 	
+	//----Payment phase methods----
 	
+	//Start payment phase
+	private static void startPayment() {
+		//...
+	}
+	//Finish payment phase
+	private static void finishPayment() {
+		//NOTHING
+	}
 }
