@@ -24,6 +24,16 @@ public class Player{
     	return true;
     }
     
+    public boolean removeCash(int cash) {
+    	if(this.cash < cash)
+    		return false;
+    	this.cash -= cash;
+    	return true;
+    }
+    public void addCash(int cash) {
+    	this.cash += cash;
+    }
+    
     public boolean hasCompany(Company c) {
     	for(Company i:companies) {
     		if(i == c)

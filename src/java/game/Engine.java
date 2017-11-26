@@ -56,6 +56,7 @@ public class Engine {
 	//List of players
 	public static List<Investor> investors = new ArrayList<Investor>();
 	public static List<Manager> managers = new ArrayList<Manager>();
+	public static List<Company> reserve = new ArrayList<Company>();
 	//Current phase
 	private static Phase phase;
 	//Current turn
@@ -87,7 +88,20 @@ public class Engine {
 	//List of negotation proposals
 	private static List<NProposal> proposals = new ArrayList<NProposal>();
 	
+	//----Variables needed for phase 3
+	//Debt for when an investor cant pay his manager
+	private static class Debt{
+		public Player payer;
+		public Player receiver;
+		public int ammount;
+		public Debt(Player payer,Player receiver, int ammount) {
+			this.payer = payer;
+			this.receiver = receiver;
+			this.ammount = ammount;
+		}
+	}
 	
+	private static List<Debt> debts = new ArrayList<Debt>();
 	//--------------GAME CYCLE---------------
 	
 	
@@ -192,7 +206,7 @@ public class Engine {
 		}
 		NProposal proposal = new NProposal(manager,investor,company,price);
 		proposals.add(proposal);
-		return new Message(true,"Success");
+		return new Message(true,"");
 	}
 	//Accept a proposal
 	public static Message acceptNProposal(int id) {
@@ -213,14 +227,14 @@ public class Engine {
 				p.accept = false;
 			}
 		}
-		return new Message(true,"Success");
+		return new Message(true,"");
 	}
 	//Delete a proposal
 	public static Message deleteNProposal(int id) {
 		for(NProposal p : proposals) {
 			if(p.id == id) {
 				proposals.remove(p);
-				return new Message(true,"Success");
+				return new Message(true,"");
 			}
 		}
 		return new Message(false,"There is no such proposal");
@@ -294,10 +308,37 @@ public class Engine {
 		}
 		boolean transf = investor.transfer(manager, ammount);
 		if(transf) {
-			return new Message(true,"Transfer successful");
+			return new Message(true,"");
 		}else {
 			return new Message(false,"Not enough money");
 		}
+	}
+	//Debts
+	public static Message createDebt(int idm, int idi, int ammount) {
+		if(phase != Phase.managers) {
+			return new Message(false,"Not in negotiation phase");
+		}
+		Investor investor = null;
+		Manager manager = null;
+		Company company=null;
+		for(Manager p : managers) {
+			if(p.id == idm) {
+				manager = (Manager) p;
+			}
+		}
+		for(Investor p : investors) {
+			if(p.id == idm) {
+				investor = (Investor) p;
+			}
+		}
+		if(investor == null) {
+			return new Message(false,"There is no such investor");
+		}
+		if(manager == null) {
+			return new Message(false,"There is no such manager");
+		}
+		debts.add(new Debt(investor,manager,ammount));
+		return new Message(true,"");
 	}
 	
 	//----Payment phase methods----
@@ -310,4 +351,55 @@ public class Engine {
 	private static void finishPayment() {
 		//NOTHING
 	}
+	//Pay company fee
+	public static Message payFee(int idm) {
+
+		if(phase != Phase.managers) {
+			return new Message(false,"Not in negotiation phase");
+		}
+		Manager manager = null;
+		for(Manager p : managers) {
+			if(p.id == idm) {
+				manager = (Manager) p;
+			}
+		}
+		if(manager == null) {
+			return new Message(false,"There is no such manager");
+		}
+		boolean success = manager.removeCash(10000);
+		if(success) {
+			return new Message(true,"");
+		}
+		else return new Message(false,"Not enough cash");
+	}
+	//Remove a company and get 5k in return
+	public static Message removeCompany(int idm,int idc) {
+		if(phase != Phase.managers) {
+			return new Message(false,"Not in negotiation phase");
+		}
+		Manager manager = null;
+		Company company = null;
+		for(Manager p : managers) {
+			if(p.id == idm) {
+				manager = (Manager) p;
+			}
+		}
+		if(manager == null) {
+			return new Message(false,"There is no such manager");
+		}
+		for(Company c:manager.companies) {
+			if(c.id == idc) {
+				company = c;
+			}
+		}
+		if(company == null) {
+			return new Message(false,"There is no such company");
+		}
+		manager.addCash(5000);
+		manager.companies.remove(company);
+		reserve.add(company);
+		return new Message(true,"");
+	}
+
+	
 }
