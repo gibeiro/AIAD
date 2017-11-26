@@ -5,6 +5,11 @@ MAS pows {
 	environment: Env
 
 	agents:
+		investor_random;
+		investor_bdi;
+		manager_bdi;
+		manager_random;
+		manager;
 		agent1 sample_agent;
 
 	aslSourcePath:
