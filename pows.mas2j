@@ -5,13 +5,8 @@ MAS pows {
 	environment: Env
 
 	agents:
-		game;
-		investor_random;
-		investor_bdi;
-		manager_bdi;
-		manager_random;
-		manager;
-		agent1 sample_agent;
+		investor_bdi # 4;
+		manager_bdi # 4;
 
 	aslSourcePath:
 		"src/asl";

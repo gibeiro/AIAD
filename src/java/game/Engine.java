@@ -112,11 +112,12 @@ public class Engine {
 	//Constructor
 	public Engine(){}
 	//Add new player
-	public static void addPlayer(Player p,PlayerType t){
-		if(t == PlayerType.investor) 
-			investors.add((Investor)p);
-		else managers.add((Manager)p);
-			
+	public static void addManager(Manager p){
+		managers.add(p);
+	}
+	
+	public static void addInvestor(Investor p){
+		investors.add(p);
 	}
 	//Start/Restart game
 	public static void start(){

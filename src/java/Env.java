@@ -4,19 +4,19 @@ import jason.asSyntax.*;
 import jason.environment.*;
 import java.util.logging.*;
 
-public class Env extends Environment {
+import game.Engine;
 
+public class Env extends Environment {
+	private Engine game;
+	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
     /** Called before the MAS execution with the args informed in .mas2j */
     @Override
     public void init(String[] args) {
         super.init(args);
-        try {
-        	addPercept(ASSyntax.parseLiteral("percept(demo)"));
-        }catch(Exception e) {
-        	
-        }
+        
+        game = new Engine();
     }
 
     @Override
@@ -26,6 +26,10 @@ public class Env extends Environment {
              informAgsEnvironmentChanged();
         }
         return true; // the action was executed with success
+    }
+    
+    public void updatePercepts() {
+    	
     }
 
     /** Called before the end of MAS execution */
