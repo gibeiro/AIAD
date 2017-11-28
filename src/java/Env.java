@@ -5,9 +5,13 @@ import jason.environment.*;
 import java.util.logging.*;
 
 import game.Engine;
+import game.Investor;
+import game.Manager;
 
 public class Env extends Environment {
 	private Engine game;
+	
+	public static final Term jg = Literal.parseLiteral("join(game)");
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -21,10 +25,21 @@ public class Env extends Environment {
 
     @Override
     public boolean executeAction(String agName, Structure action) {
-        logger.info("executing: "+action+", but not implemented!");
-        if (true) { // you may improve this condition
-             informAgsEnvironmentChanged();
+        try {
+        	if(action.equals(jg)) {
+        		if(agName.contains("investor")) {
+        			game.addInvestor(new Investor(agName));
+        		}else if(agName.contains("manager")) {
+        			game.addManager(new Manager(agName));
+        		}
+        		logger.info(agName + " joined game");
+        	}
+        }catch(Exception e) {
+        	
         }
+        
+        updatePercepts();
+        
         return true; // the action was executed with success
     }
     
