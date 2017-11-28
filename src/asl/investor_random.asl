@@ -4,8 +4,8 @@
 
 /* Initial goals */
 
-!start.
+!join.
 
 /* Plans */
 
-+!start : true <- .print("hello world.").
++!join : true <- join(game).
