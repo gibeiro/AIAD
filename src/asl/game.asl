@@ -2,10 +2,16 @@
 
 /* Initial beliefs and rules */
 
+state(start).
+
 /* Initial goals */
 
+//Start game
 !start.
 
 /* Plans */
 
-+!start : true <- .print("hello world.").
+//When game starts, start game
++!start : true <- 
+	.print("Waiting for players");
+	.wait(2000).

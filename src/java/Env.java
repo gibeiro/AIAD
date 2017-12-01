@@ -2,6 +2,8 @@
 
 import jason.asSyntax.*;
 import jason.environment.*;
+import jason.environment.grid.Location;
+
 import java.util.logging.*;
 
 import game.Engine;
@@ -46,6 +48,14 @@ public class Env extends Environment {
     
     public void updatePercepts() {
     	//List of players in the game
+    	for(Investor i:game.investors) {
+    		Literal inv = Literal.parseLiteral("player(inv," + i.name +")");
+    		addPercept(inv);
+    	}
+    	for(Manager m:game.managers) {
+    		Literal man = Literal.parseLiteral("player(man," + m.name + ")");
+    		addPercept(man);
+    	}
     	
     }
 
