@@ -4,6 +4,7 @@ import jason.asSyntax.*;
 import jason.environment.*;
 import jason.environment.grid.Location;
 
+import java.awt.EventQueue;
 import java.util.logging.*;
 
 import game.Engine;
@@ -12,6 +13,7 @@ import game.Manager;
 
 public class Env extends Environment {
 	private Engine game;
+	private Interface gui;
 	
 	public static final Term jg = Literal.parseLiteral("join(game)");
 	
@@ -23,6 +25,17 @@ public class Env extends Environment {
         super.init(args);
         
         game = new Engine();
+        gui = new Interface();
+        EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Interface frame = new Interface();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
     }
 
     @Override
