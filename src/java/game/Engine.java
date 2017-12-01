@@ -119,6 +119,12 @@ public class Engine {
 	public static void addInvestor(Investor p){
 		investors.add(p);
 	}
+	//Init
+	public static void init() {
+		//TODO add all companies to reserve
+		//TODO give 120k to all players
+		//TODO give 3 companies to the managers at random(if one gets dealt a 2X company, remove it and give him another 
+	}
 	//Start/Restart game
 	public static void start(){
 		turn = 1;

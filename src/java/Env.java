@@ -47,6 +47,8 @@ public class Env extends Environment {
     }
     
     public void updatePercepts() {
+    	//Clear global percepts(not individual ones)
+    	clearPercepts();
     	//List of players in the game
     	for(Investor i:game.investors) {
     		Literal inv = Literal.parseLiteral("player(inv," + i.name +")");

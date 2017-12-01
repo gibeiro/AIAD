@@ -11,7 +11,8 @@ state(start).
 
 /* Plans */
 
-//When game starts, start game
+//When game starts, wait for players
 +!start : true <- 
 	.print("Waiting for players");
 	.wait(2000).
+	
