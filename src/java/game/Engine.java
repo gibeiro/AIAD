@@ -27,40 +27,40 @@ public class Engine {
 		investor
 	};
 	//All the dices for the game(red,yellow, green and blue)
-	private static final Integer[][] DICE = {
+	private  final Integer[][] DICE = {
 			{7,-7,3,-3,2,-2},
 			{3,-3,2,-2,1,1},
 			{2,-2,1,-1,2,0},
 			{1,-1,1,-1,0,0}
 	};
 	//Fluctuations table
-	private static final Integer[][] VALUES = {
+	private  final Integer[][] VALUES = {
 			{-20,-10,0,30,40,50,60,70},
 			{-10,0,0,30,40,40,60,60},
 			{0,10,20,30,30,40,50,60},
 			{20,20,20,30,30,30,40,40}
 	};
 	//Fluctuation indexes at fluctuation table
-	private static Integer[] pointers = {3,3,3,3};
+	private  Integer[] pointers = {3,3,3,3};
 	//Time available for negotiation
-	private static final Integer NEGOTIATION_PERIOD = 120;
+	private  final Integer NEGOTIATION_PERIOD = 120;
 	//Number of turns
-	private static final Integer NR_TURNS = 5;
+	private  final Integer NR_TURNS = 5;
 	//RNG
-	private static final Random RNG = new Random();
+	private  final Random RNG = new Random();
 	//Roll dice
-	private static Integer diceRoll(Company.Color c){
+	private  Integer diceRoll(Company.Color c){
 		int i = RNG.nextInt(6);
 		return DICE[c.index()][i];		
 	}		
 	//List of players
-	public static List<Investor> investors = new ArrayList<Investor>();
-	public static List<Manager> managers = new ArrayList<Manager>();
-	public static List<Company> reserve = new ArrayList<Company>();
+	public  List<Investor> investors = new ArrayList<Investor>();
+	public  List<Manager> managers = new ArrayList<Manager>();
+	public  List<Company> reserve = new ArrayList<Company>();
 	//Current phase
-	private static Phase phase;
+	private  Phase phase;
 	//Current turn
-	private static Integer turn;
+	private  Integer turn;
 	
 	
 	//----Variables needed for phase 1----
@@ -68,7 +68,7 @@ public class Engine {
 	
 	//Negotiation proposal
 	private static class NProposal {
-		public static int globalIDs = 1;
+		public  int globalIDs = 1;
 		public final int id;
 		
 		Manager manager;
@@ -86,7 +86,7 @@ public class Engine {
 		}
 	}
 	//List of negotation proposals
-	private static List<NProposal> proposals = new ArrayList<NProposal>();
+	private  List<NProposal> proposals = new ArrayList<NProposal>();
 	
 	//----Variables needed for phase 3
 	//Debt for when an investor cant pay his manager
@@ -101,37 +101,37 @@ public class Engine {
 		}
 	}
 	
-	private static List<Debt> debts = new ArrayList<Debt>();
+	private  List<Debt> debts = new ArrayList<Debt>();
 	
 	//----Variables needed for phase 5
 	//Auctioned company
-	private static Company auction;
+	private  Company auction;
 	//--------------GAME CYCLE---------------
 	
 	
 	//Constructor
 	public Engine(){}
 	//Add new player
-	public static void addManager(Manager p){
+	public  void addManager(Manager p){
 		managers.add(p);
 	}
 	
-	public static void addInvestor(Investor p){
+	public  void addInvestor(Investor p){
 		investors.add(p);
 	}
 	//Init
-	public static void init() {
+	public  void init() {
 		//TODO add all companies to reserve
 		//TODO give 120k to all players
 		//TODO give 3 companies to the managers at random(if one gets dealt a 2X company, remove it and give him another 
 	}
 	//Start/Restart game
-	public static void start(){
+	public  void start(){
 		turn = 1;
 		phase = Phase.negotiation;
 		startNegotiation();
 	}
-	public static void nextPhase() {
+	public  void nextPhase() {
 		switch(phase){
 		case negotiation:
 			finishNegotiation();
@@ -171,11 +171,11 @@ public class Engine {
 	
 	
 	//Start negotiation phase
-	private static void startNegotiation(){
+	private  void startNegotiation(){
 		proposals = new ArrayList<NProposal>();
 	}
 	//Finish negotiation phase, distribute companies
-	private static void finishNegotiation(){
+	private  void finishNegotiation(){
 		for(NProposal proposal : proposals) {
 			if(proposal.accept) {
 				proposal.investor.companies.add(proposal.company);
@@ -185,7 +185,7 @@ public class Engine {
 		}
 	}
 	//Make a new proposal, idm = id of manager,idi = id of investor, idc = id of company
-	public static Message makeNProposal(int idm,int idi,int idc,int price) {
+	public  Message makeNProposal(int idm,int idi,int idc,int price) {
 		if(phase != Phase.negotiation) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -224,7 +224,7 @@ public class Engine {
 		return new Message(true,"");
 	}
 	//Accept a proposal
-	public static Message acceptNProposal(int id) {
+	public  Message acceptNProposal(int id) {
 		int idc = -1;
 		for(NProposal p : proposals) {
 			if(p.id == id) {
@@ -245,7 +245,7 @@ public class Engine {
 		return new Message(true,"");
 	}
 	//Delete a proposal
-	public static Message deleteNProposal(int id) {
+	public  Message deleteNProposal(int id) {
 		for(NProposal p : proposals) {
 			if(p.id == id) {
 				proposals.remove(p);
@@ -259,16 +259,16 @@ public class Engine {
 	//----Investors phase methods----
 	
 	//Start investors phase
-	private static void startInvestors(){
+	private  void startInvestors(){
 		fluctuate();
 		giveInvestorsIncome();
 	}
 	//Finish investors phase
-	private static void finishInvestors(){
+	private  void finishInvestors(){
 		//NOTHING
 	}
 	//Fluctuate prices
-	private static void fluctuate(){
+	private  void fluctuate(){
 		for(Company.Color c = Company.Color.red; c.index() < Company.Color.NR_COLORS; c.next()){
 			pointers[c.index()] += diceRoll(c);
 			if(pointers[c.index()] < 0) {
@@ -279,7 +279,7 @@ public class Engine {
 		}
 	}
 	//Give income to investors
-	private static void giveInvestorsIncome() {
+	private  void giveInvestorsIncome() {
 		for(Investor p:investors) {
 			for(Company c:p.companies) {
 				p.cash += VALUES[c.color.index()][pointers[c.color.index()]] * c.multiplier.value();
@@ -290,15 +290,15 @@ public class Engine {
 	//----Managers phase methods----
 	
 	//Start managers phase
-	private static void startManagers(){
+	private  void startManagers(){
 		//NOTHING
 	}
 	//Finish investors phase
-	private static void finishManagers() {
+	private  void finishManagers() {
 		//NOTHING
 	}
 	//Give income to managers
-	public static Message giveManagersIncome(int idm, int idi, int ammount) {
+	public  Message giveManagersIncome(int idm, int idi, int ammount) {
 		if(phase != Phase.managers) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -329,7 +329,7 @@ public class Engine {
 		}
 	}
 	//Debts
-	public static Message createDebt(int idm, int idi, int ammount) {
+	public  Message createDebt(int idm, int idi, int ammount) {
 		if(phase != Phase.managers) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -359,15 +359,15 @@ public class Engine {
 	//----Payment phase methods----
 	
 	//Start payment phase
-	private static void startPayment() {
+	private  void startPayment() {
 		//...
 	}
 	//Finish payment phase
-	private static void finishPayment() {
+	private  void finishPayment() {
 		//NOTHING
 	}
 	//Pay company fee
-	public static Message payFee(int idm) {
+	public  Message payFee(int idm) {
 
 		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
@@ -388,7 +388,7 @@ public class Engine {
 		else return new Message(false,"Not enough cash");
 	}
 	//Remove a company and get 5k in return
-	public static Message removeCompany(int idm,int idc) {
+	public  Message removeCompany(int idm,int idc) {
 		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -419,21 +419,21 @@ public class Engine {
 	//----Auction----
 	
 	//Start auction phase
-	private static void startAuction() {
+	private  void startAuction() {
 		
 	}
 	//Start auction phase
-	private static void finishAuction() {
+	private  void finishAuction() {
 		
 	}
 	//Remove company from reserve to auction
-	public static void toAuction() {
+	public  void toAuction() {
 		int random = new Random().nextInt(reserve.size());
 		Company c = reserve.get(random);
 		reserve.remove(random);
 	}
 	//Buy company
-	public static Message buyCompany(int idm) {
+	public  Message buyCompany(int idm) {
 		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
 		}

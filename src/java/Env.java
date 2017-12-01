@@ -14,6 +14,7 @@ public class Env extends Environment {
 	private Engine game;
 	
 	public static final Term jg = Literal.parseLiteral("join(game)");
+	public static final Term ig = Literal.parseLiteral("init(game)");
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -36,6 +37,11 @@ public class Env extends Environment {
         			game.addManager(new Manager(agName));
         		}
         		logger.info(agName + " joined game");
+        	}
+        	//If action is to init the game
+        	else if(action.equals(ig)) {
+        		game.init();
+        		logger.info("Inited game");
         	}
         }catch(Exception e) {
         	
