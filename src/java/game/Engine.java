@@ -15,11 +15,13 @@ public class Engine {
 
 	//Game phases
 	public enum Phase{
+		start,
 		negotiation,
 		investors,
 		managers,
 		payment,
-		auction
+		auction,
+		end
 	};
 	//Player type
 	public enum PlayerType{
@@ -110,7 +112,10 @@ public class Engine {
 	
 	
 	//Constructor
-	public Engine(){}
+	public Engine(){
+		this.phase = Phase.start;
+		this.turn = 0;
+	}
 	//Add new player
 	public  void addManager(Manager p){
 		managers.add(p);
@@ -119,18 +124,16 @@ public class Engine {
 	public  void addInvestor(Investor p){
 		investors.add(p);
 	}
-	//Init
+	//Init game
 	public  void init() {
+		this.phase = Phase.negotiation;
+		this.turn = 1;
 		//TODO add all companies to reserve
 		//TODO give 120k to all players
 		//TODO give 3 companies to the managers at random(if one gets dealt a 2X company, remove it and give him another 
-	}
-	//Start/Restart game
-	public  void start(){
-		turn = 1;
-		phase = Phase.negotiation;
 		startNegotiation();
 	}
+	
 	public  void nextPhase() {
 		switch(phase){
 		case negotiation:
@@ -152,7 +155,7 @@ public class Engine {
 			finishPayment();
 			phase = Phase.auction;	// managers cost payment to the bank
 			if(turn == NR_TURNS) {  //There is no auction in the last turn
-				turn++;
+				phase = Phase.end;
 				break;
 			}
 			startAuction();
@@ -163,7 +166,32 @@ public class Engine {
 			startNegotiation();
 			turn++;
 			break;
+		case end:
+			return;
 		}
+	}
+	
+	public String getPhase() {
+		if(phase == Phase.negotiation) {
+			return "negotiation";
+		}
+		switch(phase){
+		case start:
+			return "start";
+		case negotiation:
+			return "negotiation";
+		case investors:
+			return "investors";
+		case managers:
+			return "managers";
+		case payment:
+			return "payment";
+		case auction:
+			return "auction";
+		case end:
+			return "end";
+		}
+		return "";
 	}
 	
 	

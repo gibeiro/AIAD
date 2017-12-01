@@ -15,6 +15,7 @@ public class Env extends Environment {
 	
 	public static final Term jg = Literal.parseLiteral("join(game)");
 	public static final Term ig = Literal.parseLiteral("init(game)");
+	public static final Term np = Literal.parseLiteral("next(phase)");
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -38,10 +39,14 @@ public class Env extends Environment {
         		}
         		logger.info(agName + " joined game");
         	}
-        	//If action is to init the game
+        	//Initiate game
         	else if(action.equals(ig)) {
         		game.init();
-        		logger.info("Inited game");
+        		logger.info("Initiated game");
+        	}
+        	//Next phase
+        	else if(action.equals(np)) {
+        		game.nextPhase();
         	}
         }catch(Exception e) {
         	
@@ -55,6 +60,9 @@ public class Env extends Environment {
     public void updatePercepts() {
     	//Clear global percepts(not individual ones)
     	clearPercepts();
+    	//Game state
+    	Literal state = Literal.parseLiteral("state(" + game.getPhase() + ")");
+    	addPercept(state);
     	//List of players in the game
     	for(Investor i:game.investors) {
     		Literal inv = Literal.parseLiteral("player(inv," + i.name +")");
@@ -64,7 +72,6 @@ public class Env extends Environment {
     		Literal man = Literal.parseLiteral("player(man," + m.name + ")");
     		addPercept(man);
     	}
-    	
     }
 
     /** Called before the end of MAS execution */
