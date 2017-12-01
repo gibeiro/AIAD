@@ -4,6 +4,7 @@
 
 /* Initial goals */
 
+// join the game
 !join.
 
 /* Plans */

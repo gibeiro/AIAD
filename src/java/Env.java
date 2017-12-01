@@ -26,6 +26,7 @@ public class Env extends Environment {
     @Override
     public boolean executeAction(String agName, Structure action) {
         try {
+        	//If action is to join the game
         	if(action.equals(jg)) {
         		if(agName.contains("investor")) {
         			game.addInvestor(new Investor(agName));
@@ -44,6 +45,7 @@ public class Env extends Environment {
     }
     
     public void updatePercepts() {
+    	//List of players in the game
     	
     }
 

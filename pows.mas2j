@@ -5,6 +5,7 @@ MAS pows {
 	environment: Env
 
 	agents:
+		game;
 		investor_bdi # 4;
 		manager_bdi # 4;
 
