@@ -21,5 +21,4 @@ beggining.
 
 +!chooseCompanies <- 
 	.findall([Man,Comp],selling(Man,Comp),LS);
-	.print(LS).
-	
+	.shuffle(LS,RAND).
