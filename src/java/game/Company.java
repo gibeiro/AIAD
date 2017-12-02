@@ -1,8 +1,7 @@
 package game;
 
 public class Company {
-	public static int globalIDs = 1;
-	public final int id;
+	public static int globalNAMESs = 1;
     public String name;
     
     public enum Status {open,closed};
@@ -16,6 +15,19 @@ public class Company {
         public Integer index(){return i;}
         public Color next(){
         	return values()[++i];
+        }
+        public String toString() {
+        	if(i == 0) {
+        		return "red";
+        	}else if(i == 1) {
+        		return "yellow";
+        	}else if(i == 2) {
+        		return "green";
+        	}else if(i == 3) {
+        		return "blue";
+        	}
+        	//never gets here
+        	return "red";
         }
 	};	
     public enum Multiplier{
@@ -35,8 +47,10 @@ public class Company {
     public Multiplier multiplier;
 
     public Company(String name, Color c, Multiplier m){
-    	this.id = Company.globalIDs++;
-    	this.name = name;
+    	int id = Company.globalNAMESs++;
+    	if(name.equals("")) {
+    		this.name = Integer.toString(id);
+    	}else this.name = name;
     	this.status = Status.open;
     	this.price = 0;
         this.color = c;

@@ -15,37 +15,38 @@ beggining.
 +!doState : beggining <- 
 	-beggining;
 	.print("Waiting for players");
-	.wait(1000);
+	.wait(2000);
+	.print("---Negotiation Phase---");
 	init(game);
 	!doState.
 	
 +!doState : state(negotiation) <- 
-	.print("---Negotiation Phase---");
-	.wait(1000);
+	.wait(5000);
+	.print("---Investors Phase---");
 	next(phase);
 	!doState.
 	
 +!doState : state(investors) <- 
-	.print("---Investors Phase---");
 	.wait(1000);
+	.print("---Managers Phase---");
 	next(phase);
 	!doState.
 	
 +!doState : state(managers) <- 
-	.print("---Managers Phase---");
 	.wait(1000);
+	.print("---Payment Phase---");
 	next(phase);
 	!doState.
 	
 +!doState : state(payment) <- 
-	.print("---Payment Phase---");
 	.wait(1000);
+	.print("---Auction Phase---");
 	next(phase);
 	!doState.
 	
 +!doState : state(auction) <- 
-	.print("---Auction Phase---");
 	.wait(1000);
+	.print("---Negotiation Phase---");
 	next(phase);
 	!doState.
 	

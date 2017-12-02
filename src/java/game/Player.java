@@ -1,18 +1,18 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player{
-	public static int globalIDs = 1;
-	public final int id;
     public String name;
     
     public int cash;
 	public List<Company> companies;
 
     public Player(String name){
-    	this.id = Player.globalIDs++;
     	this.name = name;
+    	cash = 0;
+		companies  = new ArrayList<Company>();
     }
     
     public boolean transfer(Player p, int cash) {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class Engine {
 	//---- GAME ----
@@ -57,39 +58,14 @@ public class Engine {
 		return DICE[c.index()][i];		
 	}		
 	//List of players
-	public  List<Investor> investors = new ArrayList<Investor>();
-	public  List<Manager> managers = new ArrayList<Manager>();
-	public  List<Company> reserve = new ArrayList<Company>();
+	public  List<Investor> investors;
+	public  List<Manager> managers;
+	public  List<Company> reserve;
 	//Current phase
 	private  Phase phase;
 	//Current turn
 	private  Integer turn;
 	
-	
-	//----Variables needed for phase 1----
-	
-	
-	//Negotiation proposal
-	private static class NProposal {
-		public  int globalIDs = 1;
-		public final int id;
-		
-		Manager manager;
-		Investor investor;
-		Company company;
-		int price;
-		Boolean accept;
-		NProposal(Player manager, Player investor, Company company,int price){
-			this.id = globalIDs++;
-			this.manager = (Manager)manager;
-			this.investor = (Investor)investor;
-			this.company = company;
-			this.price = price;
-			this.accept = false;
-		}
-	}
-	//List of negotation proposals
-	private  List<NProposal> proposals = new ArrayList<NProposal>();
 	
 	//----Variables needed for phase 3
 	//Debt for when an investor cant pay his manager
@@ -116,6 +92,9 @@ public class Engine {
 	public Engine(){
 		this.phase = Phase.start;
 		this.turn = 0;
+		investors = new ArrayList<Investor>();
+		managers = new ArrayList<Manager>();
+		reserve = new ArrayList<Company>();
 	}
 	//Add new player
 	public  void addManager(Manager p){
@@ -130,6 +109,7 @@ public class Engine {
 		this.phase = Phase.negotiation;
 		this.turn = 1;
 		
+		reserve = new ArrayList<Company>();
 		/* add regular 1x companies */
 		for(int i = 0; i < 11; i++) {
 			reserve.add(new Company("",Company.Color.yellow,Company.Multiplier.one));
@@ -138,17 +118,20 @@ public class Engine {
 		}
 		for(int i = 0; i < 6; i++) {
 			reserve.add(new Company("",Company.Color.red,Company.Multiplier.one));
-		}		
+		}	
 		
 		/* give players 120k cash */
-		for(Player p : managers) p.addCash(120000);
-		for(Player p : investors) p.addCash(120000);
+		for(Manager p : managers) p.addCash(120000);
+		for(Investor p : investors) p.addCash(120000);
 		
 		/* give managers 3 random companies from the reserve */
 		Random r = new Random();
 		for(Manager m : managers) {
-			for(int i = 0; i < 3; i++) 
-			m.addCompany(reserve.remove(r.nextInt() % reserve.size()));			
+			for(int i = 0; i < 3; i++) {
+				Company c = reserve.get(r.nextInt(reserve.size()));
+				m.addCompany(c);
+				reserve.remove(c);
+			}
 		}
 		
 		/* add remaining 2x companies */
@@ -158,7 +141,6 @@ public class Engine {
 			reserve.add(new Company("",Company.Color.blue,Company.Multiplier.two));
 		}
 		reserve.add(new Company("",Company.Color.red,Company.Multiplier.two));
-		
 		/* shuffle the companies -> useful coz u don't have to calc a random index
 		 * each time u access the list of companies and u can 'reserve.remove(reserve.size() - 1)'
 		 * to get a random company in constant time	
@@ -233,21 +215,15 @@ public class Engine {
 	
 	
 	//Start negotiation phase
-	private  void startNegotiation(){
-		proposals = new ArrayList<NProposal>();
+	private void startNegotiation(){
+		//NOTHING
 	}
 	//Finish negotiation phase, distribute companies
-	private  void finishNegotiation(){
-		for(NProposal proposal : proposals) {
-			if(proposal.accept) {
-				proposal.investor.companies.add(proposal.company);
-				proposal.company.price = proposal.price;
-			}
-			
-		}
+	private void finishNegotiation(){
+		//NOTHING
 	}
-	//Make a new proposal, idm = id of manager,idi = id of investor, idc = id of company
-	public  Message makeNProposal(int idm,int idi,int idc,int price) {
+	//Add a company to a investor
+	public Message investCompany(String idi,String idm,String idc,int price) {
 		if(phase != Phase.negotiation) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -255,12 +231,17 @@ public class Engine {
 		Manager manager = null;
 		Company company=null;
 		for(Manager p : managers) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				manager = (Manager) p;
+				for(Company c : manager.companies) {
+					if(c.name.equals(idc)) {
+						company = c;
+					}
+				}
 			}
 		}
 		for(Investor p : investors) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				investor = (Investor) p;
 			}
 		}
@@ -270,53 +251,13 @@ public class Engine {
 		if(manager == null) {
 			return new Message(false,"There is no such manager");
 		}
-		for(int i = 0;i < manager.companies.size();i++) {
-			if(manager.companies.get(i).id == idc) {
-				if(manager.companies.get(i).status == Company.Status.closed) {
-					return new Message(false,"Company is closed");
-				}
-				company = manager.companies.get(i);
-			}
-		}
 		if(company == null) {
-			return new Message(false,"The manager has no such company");
+			return new Message(false,"Manager doesn't have this company");
 		}
-		NProposal proposal = new NProposal(manager,investor,company,price);
-		proposals.add(proposal);
+		investor.addCompany(company);
+		company.price = price;
 		return new Message(true,"");
 	}
-	//Accept a proposal
-	public  Message acceptNProposal(int id) {
-		int idc = -1;
-		for(NProposal p : proposals) {
-			if(p.id == id) {
-				p.accept = true;
-				idc = p.company.id;
-				break;
-			}
-		}
-		//This step is done so that there can't be more than 1 accepted proposal on the same company
-		if(idc == -1) {
-			return new Message(false,"There is no such company");
-		}
-		for(NProposal p : proposals) {
-			if(p.company.id == idc && p.id != id) {
-				p.accept = false;
-			}
-		}
-		return new Message(true,"");
-	}
-	//Delete a proposal
-	public  Message deleteNProposal(int id) {
-		for(NProposal p : proposals) {
-			if(p.id == id) {
-				proposals.remove(p);
-				return new Message(true,"");
-			}
-		}
-		return new Message(false,"There is no such proposal");
-	}
-	//TODO GETTERS
 	
 	//----Investors phase methods----
 	
@@ -360,7 +301,7 @@ public class Engine {
 		//NOTHING
 	}
 	//Give income to managers
-	public  Message giveManagersIncome(int idm, int idi, int ammount) {
+	public  Message giveManagersIncome(String idm, String idi, int ammount) {
 		if(phase != Phase.managers) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -368,12 +309,12 @@ public class Engine {
 		Manager manager = null;
 		Company company=null;
 		for(Manager p : managers) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				manager = (Manager) p;
 			}
 		}
 		for(Investor p : investors) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				investor = (Investor) p;
 			}
 		}
@@ -391,7 +332,7 @@ public class Engine {
 		}
 	}
 	//Debts
-	public  Message createDebt(int idm, int idi, int ammount) {
+	public  Message createDebt(String idm, String idi, int ammount) {
 		if(phase != Phase.managers) {
 			return new Message(false,"Not in negotiation phase");
 		}
@@ -399,12 +340,12 @@ public class Engine {
 		Manager manager = null;
 		Company company=null;
 		for(Manager p : managers) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				manager = (Manager) p;
 			}
 		}
 		for(Investor p : investors) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				investor = (Investor) p;
 			}
 		}
@@ -429,14 +370,14 @@ public class Engine {
 		//NOTHING
 	}
 	//Pay company fee
-	public  Message payFee(int idm) {
+	public  Message payFee(String idm) {
 
 		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
 		}
 		Manager manager = null;
 		for(Manager p : managers) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				manager = (Manager) p;
 			}
 		}
@@ -450,14 +391,14 @@ public class Engine {
 		else return new Message(false,"Not enough cash");
 	}
 	//Remove a company and get 5k in return
-	public  Message removeCompany(int idm,int idc) {
+	public  Message removeCompany(String idm,String idc) {
 		if(phase != Phase.payment) {
 			return new Message(false,"Not in negotiation phase");
 		}
 		Manager manager = null;
 		Company company = null;
 		for(Manager p : managers) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				manager = (Manager) p;
 			}
 		}
@@ -465,7 +406,7 @@ public class Engine {
 			return new Message(false,"There is no such manager");
 		}
 		for(Company c:manager.companies) {
-			if(c.id == idc) {
+			if(c.name.equals(idc)) {
 				company = c;
 			}
 		}
@@ -501,7 +442,7 @@ public class Engine {
 		}
 		Manager manager = null;
 		for(Manager p : managers) {
-			if(p.id == idm) {
+			if(p.name.equals(idm)) {
 				manager = (Manager) p;
 			}
 		}

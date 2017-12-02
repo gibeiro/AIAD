@@ -7,6 +7,7 @@ import jason.environment.grid.Location;
 import java.awt.EventQueue;
 import java.util.logging.*;
 
+import game.Company;
 import game.Engine;
 import game.Investor;
 import game.Manager;
@@ -78,12 +79,28 @@ public class Env extends Environment {
     	addPercept(state);
     	//List of players in the game
     	for(Investor i:game.investors) {
-    		Literal inv = Literal.parseLiteral("player(inv," + i.name +")");
+    		Literal inv = Literal.parseLiteral("player(investor," + i.name +"," + i.cash + ")");
     		addPercept(inv);
     	}
     	for(Manager m:game.managers) {
-    		Literal man = Literal.parseLiteral("player(man," + m.name + ")");
+    		Literal man = Literal.parseLiteral("player(manager," + m.name + "," + m.cash + ")");
     		addPercept(man);
+    	}
+    	//List of companies owned by managers
+    	for(Manager m:game.managers) {
+    		for(Company c:m.companies) {
+    			Literal com = Literal.parseLiteral("company(" + c.name + "," + c.color.toString() + "," + c.multiplier.value() + ")");
+    			addPercept(com);
+    			Literal own = Literal.parseLiteral("owns(" + m.name + "," + c.name + ")");
+    			addPercept(own);
+    		}
+    	}
+    	//List of companies invested
+    	for(Investor i:game.investors) {
+    		for(Company c:i.companies) {
+    			Literal inv = Literal.parseLiteral("invests(" + i.name + "," + c.name + "," + c.price + ")");
+    			addPercept(inv);
+    		}
     	}
     }
 
