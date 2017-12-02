@@ -62,6 +62,10 @@ public class Env extends Environment {
         	else if(action.equals(np)) {
         		game.nextPhase();
         	}
+        	//Accept proposal in phase 1
+        	else if(action.toString().contains("acceptProposal")){
+        		
+        	}
         }catch(Exception e) {
         	
         }

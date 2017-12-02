@@ -21,9 +21,6 @@ beggining.
 +state(negotiation) <-
 	.print("Im open for proposals!");
 	!startCNP.
-	
-+propose(Inv,Comp,Value)<-
-	.print(Value).
 
 //Send to all investors the companies i'm selling
 +!startCNP : true <-
@@ -31,5 +28,16 @@ beggining.
 	.my_name(Me);
 	for(owns(Me,Comp)){
 		.send(LI,tell,selling(Me,Comp))
-	}.
+	};
+	+firstOne.
+//Process proposals from investors
++propose(_,_,_) : firstOne<-
+	-firstOne;.wait(1000);!chooseProposals.
+	
++!chooseProposals <- 
+	.findall([I,C,V],propose(I,C,V),LS);
+	.shuffle(LS,LS2);
+	.nth(0,LS2,[Inv,Comp,Val]);
+	.my_name(Me);
+	acceptProposal(Me,Inv,Comp,Val).
 	
