@@ -1,3 +1,9 @@
+/* Useful logic */
+
+firstN(_,[],0).
+firstN([E1|R1],[E1|R2],N):-
+	N2 = N-1 & first3(R1,R2,N2).
+
 // Agent investor_random in project pows
 
 /* Initial goals */
@@ -20,5 +26,12 @@ beggining.
 +selling(_,_) : firstOne <- -firstOne;.wait(1000);!chooseCompanies.
 
 +!chooseCompanies <- 
-	.findall([Man,Comp],selling(Man,Comp),LS);
-	.shuffle(LS,RAND).
+	.findall([M,C],selling(M,C),LS);
+	.shuffle(LS,LS2);
+	.nth(0,LS2,[ToSend,Company]);
+	.my_name(Me);
+	?player(_,Me,Cash);
+	.random(Rand);
+	Value = (Cash*Rand);
+	.send(ToSend,tell,propose(Me,Company,Value)).
+	

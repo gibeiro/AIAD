@@ -21,6 +21,9 @@ beggining.
 +state(negotiation) <-
 	.print("Im open for proposals!");
 	!startCNP.
+	
++propose(Inv,Comp,Value)<-
+	.print(Value).
 
 //Send to all investors the companies i'm selling
 +!startCNP : true <-
