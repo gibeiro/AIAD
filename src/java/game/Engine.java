@@ -7,6 +7,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -128,9 +129,42 @@ public class Engine {
 	public  void init() {
 		this.phase = Phase.negotiation;
 		this.turn = 1;
-		//TODO add all companies to reserve
-		//TODO give 120k to all players
-		//TODO give 3 companies to the managers at random(if one gets dealt a 2X company, remove it and give him another 
+		
+		/* add regular 1x companies */
+		for(int i = 0; i < 11; i++) {
+			reserve.add(new Company("",Company.Color.yellow,Company.Multiplier.one));
+			reserve.add(new Company("",Company.Color.green,Company.Multiplier.one));
+			reserve.add(new Company("",Company.Color.blue,Company.Multiplier.one));
+		}
+		for(int i = 0; i < 6; i++) {
+			reserve.add(new Company("",Company.Color.red,Company.Multiplier.one));
+		}		
+		
+		/* give players 120k cash */
+		for(Player p : managers) p.addCash(120000);
+		for(Player p : investors) p.addCash(120000);
+		
+		/* give managers 3 random companies from the reserve */
+		Random r = new Random();
+		for(Manager m : managers) {
+			for(int i = 0; i < 3; i++) 
+			m.addCompany(reserve.remove(r.nextInt() % reserve.size()));			
+		}
+		
+		/* add remaining 2x companies */
+		for(int i = 0; i < 2; i++) {
+			reserve.add(new Company("",Company.Color.yellow,Company.Multiplier.two));
+			reserve.add(new Company("",Company.Color.green,Company.Multiplier.two));
+			reserve.add(new Company("",Company.Color.blue,Company.Multiplier.two));
+		}
+		reserve.add(new Company("",Company.Color.red,Company.Multiplier.two));
+		
+		/* shuffle the companies -> useful coz u don't have to calc a random index
+		 * each time u access the list of companies and u can 'reserve.remove(reserve.size() - 1)'
+		 * to get a random company in constant time	
+		 */
+		//Collections.shuffle(reserve);
+		
 		startNegotiation();
 	}
 	

@@ -41,5 +41,7 @@ public class Player{
     	}
     	return false;
     }
+    
+    public void addCompany(Company c) {companies.add(c);}
 
 }
