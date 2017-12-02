@@ -57,7 +57,7 @@ public class Env extends Environment {
         return true; // the action was executed with success
     }
     
-    public void updatePercepts() {
+    public synchronized void updatePercepts() {
     	//Clear global percepts(not individual ones)
     	clearPercepts();
     	//Game state
