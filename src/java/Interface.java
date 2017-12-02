@@ -13,7 +13,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JSeparator;
 import javax.swing.JList;
 import java.awt.FlowLayout;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
