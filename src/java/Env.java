@@ -19,6 +19,7 @@ public class Env extends Environment {
 	public static final Term jg = Literal.parseLiteral("join(game)");
 	public static final Term ig = Literal.parseLiteral("init(game)");
 	public static final Term np = Literal.parseLiteral("next(phase)");
+	public static final String prop = "acceptProposal";
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -63,8 +64,13 @@ public class Env extends Environment {
         		game.nextPhase();
         	}
         	//Accept proposal in phase 1
-        	else if(action.toString().contains("acceptProposal")){
-        		
+        	else if(action.toString().contains(prop)){
+        		String s = action.toString();
+        		s = s.substring(s.indexOf("("));
+        		s = s.substring(0,s.indexOf(")"));
+        		String[] parts = s.split(",");
+        		Double value = Double.parseDouble(parts[3]);
+        		game.investCompany(parts[0],parts[1],parts[2],value.intValue());
         	}
         }catch(Exception e) {
         	

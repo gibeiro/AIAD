@@ -33,5 +33,6 @@ beggining.
 	?player(_,Me,Cash);
 	.random(Rand);
 	Value = (Cash*Rand);
-	.send(ToSend,tell,propose(Me,Company,Value)).
+	.send(ToSend,tell,propose(Me,Company,Value));
+	-selling(_,_).
 	

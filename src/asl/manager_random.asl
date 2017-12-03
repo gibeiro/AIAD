@@ -39,5 +39,6 @@ beggining.
 	.shuffle(LS,LS2);
 	.nth(0,LS2,[Inv,Comp,Val]);
 	.my_name(Me);
-	acceptProposal(Me,Inv,Comp,Val).
+	acceptProposal(Inv,Me,Comp,Val);
+	.print("Accepted proposal for company ", Comp, " by investor ",Inv," for ",Val).
 	
