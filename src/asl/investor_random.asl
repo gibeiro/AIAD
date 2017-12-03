@@ -15,12 +15,15 @@ beggining.
 
 /* Plans */
 
-+!join : true <- join(game).
++!join : true <- join(game);+canNegotiation.
 
 //Negotiation phase
 
-+state(negotiation) <-
-	+firstOne.
++state(negotiation):canNegotiation <-
+	+canAuction;
+	-canNegotiation;
+	+firstOne;
+	+canInvestors.
 
 //Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose
 +selling(_,_) : firstOne <- -firstOne;.wait(1000);!chooseCompanies.
@@ -33,6 +36,39 @@ beggining.
 	?player(_,Me,Cash);
 	.random(Rand);
 	Value = (Cash*Rand);
-	.send(ToSend,tell,propose(Me,Company,Value));
-	-selling(_,_).
+	.send(ToSend,tell,propose(Me,Company,Value)).
 	
+//Investors phase
+
++state(investors) <-
+	.abolish(selling(_,_)).
+	
++state(investors):canInvestors <-
+	+canNegotiation;
+	-canInvestors;
+	//Code
+	+canManagers.
+	
+/*Managers phase*/
+
++state(managers):canManagers <-
+	+canInvestors;
+	-canManagers;
+	//Code
+	+canPayment.
+	
+/*Payment phase*/
+
++state(payment):canPayment <-
+	+canManagers;
+	-canPayment;
+	//Code
+	+canAuction.
+	
+/*Auction phase*/
+
++state(auction):canAuction <-
+	+canPayment;
+	-canAuction;
+	//Code
+	+canNegotiation.

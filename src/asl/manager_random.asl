@@ -13,14 +13,18 @@ beggining.
 
 +!join : beggining <- 
 	-beggining;
-	join(game).
+	join(game);
+	+canNegotiation.
 
-//If negotiation state beggins
+/*Negotiation phase*/
 
 //React to state change to negotiation
-+state(negotiation) <-
++state(negotiation):canNegotiation <-
+	+canAuction;
+	-canNegotiation;
 	.print("Im open for proposals!");
-	!startCNP.
+	!startCNP;
+	+canInvestors.
 
 //Send to all investors the companies i'm selling
 +!startCNP : true <-
@@ -41,4 +45,35 @@ beggining.
 	.my_name(Me);
 	acceptProposal(Inv,Me,Comp,Val);
 	.print("Accepted proposal for company ", Comp, " by investor ",Inv," for ",Val).
+
+/*Investors phase*/
+
++state(investors):canInvestors <-
+	+canNegotiation;
+	-canInvestors;
+	//Code
+	+canManagers.
 	
+/*Managers phase*/
+
++state(managers):canManagers <-
+	+canInvestors;
+	-canManagers;
+	//Code
+	+canPayment.
+	
+/*Payment phase*/
+
++state(payment):canPayment <-
+	+canManagers;
+	-canPayment;
+	//Code
+	+canAuction.
+	
+/*Auction phase*/
+
++state(auction):canAuction <-
+	+canPayment;
+	-canAuction;
+	//Code
+	+canNegotiation.
