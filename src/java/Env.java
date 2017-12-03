@@ -116,30 +116,30 @@ public class Env extends Environment {
     	addPercept(state);
     	//List of players in the game
     	for(Player i:game.investors) {
-    		if(!i.bankrupt) {
-    			Literal inv = Literal.parseLiteral("player(investor," + i.name +"," + i.cash + ")");
+    		if(!i.isBankrupt()) {
+    			Literal inv = Literal.parseLiteral("player(investor," + i.getName() +"," + i.getCash() + ")");
         		addPercept(inv);
     		}
     	}
     	for(Player m:game.managers) {
-    		if(!m.bankrupt) {
-    			Literal man = Literal.parseLiteral("player(manager," + m.name + "," + m.cash + ")");
+    		if(!m.isBankrupt()) {
+    			Literal man = Literal.parseLiteral("player(manager," + m.getName() + "," + m.getCash() + ")");
     			addPercept(man);
     		}
     	}
     	//List of companies owned by managers
     	for(Player m:game.managers) {
-    		for(Company c:m.companies) {
-    			Literal com = Literal.parseLiteral("company(" + c.name + "," + c.color.toString() + "," + c.multiplier + ")");
+    		for(Company c:m.getCompanies()) {
+    			Literal com = Literal.parseLiteral("company(" + c.getName() + "," + c.getColor().toString() + "," + c.getMultiplier() + ")");
     			addPercept(com);
-    			Literal own = Literal.parseLiteral("owns(" + m.name + "," + c.name + ")");
+    			Literal own = Literal.parseLiteral("owns(" + m.getName() + "," + c.getName() + ")");
     			addPercept(own);
     		}
     	}
     	//List of companies invested
     	for(Player i:game.investors) {
-    		for(Company c:i.companies) {
-    			Literal inv = Literal.parseLiteral("invests(" + i.name + "," + c.name + "," + c.price + ")");
+    		for(Company c:i.getCompanies()) {
+    			Literal inv = Literal.parseLiteral("invests(" + i.getName() + "," + c.getName() + "," + c.getPrice() + ")");
     			addPercept(inv);
     		}
     	}

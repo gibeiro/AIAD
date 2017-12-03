@@ -119,7 +119,7 @@ public class Interface extends JFrame {
 			lblMoney.setBounds(12, 61, 103, 16);
 			panel.add(lblMoney);
 			
-			JLabel money = new JLabel(Integer.toString(game.managers.get(i).cash) + " \u20AC");
+			JLabel money = new JLabel(Integer.toString(game.managers.get(i).getCash()) + " \u20AC");
 			money.setHorizontalAlignment(SwingConstants.CENTER);
 			money.setBounds(113, 61, 103, 16);
 			panel.add(money);
@@ -165,7 +165,7 @@ public class Interface extends JFrame {
 			lblMoney.setBounds(12, 61, 103, 16);
 			panel.add(lblMoney);
 			
-			JLabel money = new JLabel(Integer.toString(game.managers.get(i).cash) + " \u20AC");
+			JLabel money = new JLabel(Integer.toString(game.managers.get(i).getCash()) + " \u20AC");
 			money.setHorizontalAlignment(SwingConstants.CENTER);
 			money.setBounds(113, 61, 103, 16);
 			panel.add(money);
@@ -200,11 +200,11 @@ public class Interface extends JFrame {
 	public void update(Engine game) {
 		for(int i=0;i<game.managers.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(i);
-			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).cash) + " €");
+			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
 		}
 		for(int i=0;i<game.investors.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(game.managers.size()+i);
-			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).cash) + " €");
+			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
 		}
 	}
 }

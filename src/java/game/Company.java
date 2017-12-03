@@ -1,9 +1,6 @@
 package game;
 
 public class Company {
-	public static int globalNAMESs = 1;
-    public String name;
-    
     public enum Status {open,closed};
     public enum Color{
 		red(0),yellow(1),green(2),blue(3);
@@ -27,11 +24,15 @@ public class Company {
         	return "red";
         }
 	};	
-    public int multiplier;
+	
+	private static int globalNAMESs = 1;
+    private String name;
+    
+    private int multiplier;
 
-    public int price;
-    public Status status;
-    public Color color;
+    private int price;
+    private Status status;
+    private Color color;
 
     public Company(String name, Color c, int m){
     	int id = Company.globalNAMESs++;
@@ -43,5 +44,53 @@ public class Company {
         this.color = c;
         this.multiplier = m;
     }
+
+	public static int getGlobalNAMESs() {
+		return globalNAMESs;
+	}
+
+	public static void setGlobalNAMESs(int globalNAMESs) {
+		Company.globalNAMESs = globalNAMESs;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getMultiplier() {
+		return multiplier;
+	}
+
+	public void setMultiplier(int multiplier) {
+		this.multiplier = multiplier;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
 }

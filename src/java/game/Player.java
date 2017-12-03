@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player{
-    public String name;
-    public boolean bankrupt;
-    public int cash;
-	public List<Company> companies;
+    private String name;
+    private boolean bankrupt;
+    private int cash;
+	private List<Company> companies;
 
     public Player(String name){
     	this.name = name;
@@ -45,7 +45,50 @@ public class Player{
     	}
     	return false;
     }
-    
-    public void addCompany(Company c) {companies.add(c);}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isBankrupt() {
+		return bankrupt;
+	}
+
+	public void setBankrupt(boolean bankrupt) {
+		this.bankrupt = bankrupt;
+	}
+
+	public int getCash() {
+		return cash;
+	}
+
+	public void setCash(int cash) {
+		this.cash = cash;
+	}
+
+	public List<Company> getCompanies() {
+		if(!this.bankrupt)
+			return companies;
+		else 
+			return new ArrayList<Company>();
+	}
+
+	public void setCompanies(List<Company> companies) {
+		this.companies = companies;
+	}
+	
+	public void clearCompanies() {
+		this.companies.clear();
+	}
+	
+	 public void addCompany(Company c) {companies.add(c);}
+	 
+	 public void removeCompany(Company c) {
+		 companies.remove(c);
+	 }
 
 }

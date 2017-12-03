@@ -209,17 +209,17 @@ public class Engine {
 		Player manager = null;
 		Company company=null;
 		for(Player p : managers) {
-			if(p.name.equals(idm)) {
+			if(p.getName().equals(idm)) {
 				manager = p;
-				for(Company c : manager.companies) {
-					if(c.name.equals(idc)) {
+				for(Company c : manager.getCompanies()) {
+					if(c.getName().equals(idc)) {
 						company = c;
 					}
 				}
 			}
 		}
 		for(Player p : investors) {
-			if(p.name.equals(idi)) {
+			if(p.getName().equals(idi)) {
 				investor = p;
 			}
 		}
@@ -233,7 +233,7 @@ public class Engine {
 			return;
 		}
 		investor.addCompany(company);
-		company.price = price;
+		company.setPrice(price);
 		return;
 	}
 	
@@ -262,7 +262,7 @@ public class Engine {
 	public void giveInvestorIncome(String idi,int value) {
 		Player investor = null;
 		for(Player p : investors) {
-			if(p.name.equals(idi)) {
+			if(p.getName().equals(idi)) {
 				investor = p;
 			}
 		}
@@ -287,12 +287,12 @@ public class Engine {
 		Player investor = null;
 		Player manager = null;
 		for(Player p : managers) {
-			if(p.name.equals(idm)) {
+			if(p.getName().equals(idm)) {
 				manager = p;
 			}
 		}
 		for(Player p : investors) {
-			if(p.name.equals(idi)) {
+			if(p.getName().equals(idi)) {
 				investor = p;
 			}
 		}
@@ -308,15 +308,14 @@ public class Engine {
 	public  void bankruptInvestor(String idi) {
 		Player investor = null;
 		for(Player p : investors) {
-			if(p.name.equals(idi)) {
+			if(p.getName().equals(idi)) {
 				investor = p;
 			}
 		}
 		if(investor == null) {
 			return;
 		}
-		investor.bankrupt = true;
-		investor.companies.clear();
+		investor.setBankrupt(true);
 	}
 	//----Payment phase methods----
 	
@@ -332,7 +331,7 @@ public class Engine {
 	public void payFee(String idm,int ammount) {
 		Player manager = null;
 		for(Player p : managers) {
-			if(p.name.equals(idm)) {
+			if(p.getName().equals(idm)) {
 				manager = p;
 			}
 		}
@@ -349,15 +348,15 @@ public class Engine {
 		Player manager = null;
 		Company company = null;
 		for(Player p : managers) {
-			if(p.name.equals(idm)) {
+			if(p.getName().equals(idm)) {
 				manager = p;
 			}
 		}
 		if(manager == null) {
 			return;
 		}
-		for(Company c:manager.companies) {
-			if(c.name.equals(idc)) {
+		for(Company c:manager.getCompanies()) {
+			if(c.getName().equals(idc)) {
 				company = c;
 			}
 		}
@@ -365,7 +364,7 @@ public class Engine {
 			return;
 		}
 		manager.addCash(5000);
-		manager.companies.remove(company);
+		manager.removeCompany(company);
 		reserve.add(company);
 		return;
 	}
@@ -393,18 +392,18 @@ public class Engine {
 		}
 		Player manager = null;
 		for(Player p : managers) {
-			if(p.name.equals(idm)) {
+			if(p.getName().equals(idm)) {
 				manager = p;
 			}
 		}
 		if(manager == null) {
 			return;
 		}
-		if(manager.cash < 5000) {
+		if(manager.getCash() < 5000) {
 			return;
 		}
 		manager.removeCash(5000);
-		manager.companies.add(auction);
+		manager.addCompany(auction);
 		auction = null;
 		return;
 	}
