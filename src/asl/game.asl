@@ -29,7 +29,7 @@ beggining.
 +!doState : state(investors) <- 
 	fluctuate(game);
 	//print fluctuations
-	.print("Doing fluctuation");
+	.print("Doing fluctuation...");
 	for(fluct(Color,Val)){
 		.print(Color," companies fluctuation at ",Val);
 	};

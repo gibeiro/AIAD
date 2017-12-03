@@ -51,7 +51,7 @@ beggining.
 +state(investors):canInvestors <-
 	+canNegotiation;
 	-canInvestors;
-	//Code
+	//Nothing to do here
 	+canManagers.
 	
 /*Managers phase*/
@@ -59,9 +59,19 @@ beggining.
 +state(managers):canManagers <-
 	+canInvestors;
 	-canManagers;
-	//Code
+	!collectIncome;
 	+canPayment.
 	
++!collectIncome : true <-
+	.my_name(Me);
+	for(owns(Me,Company) & invests(Investor,Company,Price)){
+		?player(investor,Investor,Cash);
+		if(Cash >= Price){
+			.send(Investor,tell,payInc(Me,Price));
+		}else{
+			bankrupt(Investor);
+		}
+	}.
 /*Payment phase*/
 
 +state(payment):canPayment <-

@@ -205,9 +205,6 @@ public class Engine {
 	}
 	//Add a company to a investor
 	public void investCompany(String idi,String idm,String idc,int price) {
-		if(phase != Phase.negotiation) {
-			return;
-		}
 		Player investor = null;
 		Player manager = null;
 		Company company=null;
@@ -263,9 +260,6 @@ public class Engine {
 	}
 	//Give income to investors
 	public void giveInvestorIncome(String idi,int value) {
-		if(phase != Phase.managers) {
-			return;
-		}
 		Player investor = null;
 		for(Player p : investors) {
 			if(p.name.equals(idi)) {
@@ -288,21 +282,17 @@ public class Engine {
 	private  void finishManagers() {
 		//NOTHING
 	}
-	//Give income to managers
-	public  void giveManagersIncome(String idm, String idi, int ammount) {
-		if(phase != Phase.managers) {
-			return;
-		}
+	//Give income to manager
+	public  void giveManagerIncome(String idm, String idi, int ammount) {
 		Player investor = null;
 		Player manager = null;
-		Company company=null;
 		for(Player p : managers) {
 			if(p.name.equals(idm)) {
 				manager = p;
 			}
 		}
 		for(Player p : investors) {
-			if(p.name.equals(idm)) {
+			if(p.name.equals(idi)) {
 				investor = p;
 			}
 		}
@@ -312,14 +302,22 @@ public class Engine {
 		if(manager == null) {
 			return;
 		}
-		boolean transf = investor.transfer(manager, ammount);
-		if(transf) {
-			return;
-		}else {
+		investor.transfer(manager, ammount);
+	}
+	//Bankrupt investor
+	public  void bankruptInvestor(String idi) {
+		Player investor = null;
+		for(Player p : investors) {
+			if(p.name.equals(idi)) {
+				investor = p;
+			}
+		}
+		if(investor == null) {
 			return;
 		}
+		investor.bankrupt = true;
+		investor.companies.clear();
 	}
-	
 	//----Payment phase methods----
 	
 	//Start payment phase

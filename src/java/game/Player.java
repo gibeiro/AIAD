@@ -5,19 +5,22 @@ import java.util.List;
 
 public class Player{
     public String name;
-    
+    public boolean bankrupt;
     public int cash;
 	public List<Company> companies;
 
     public Player(String name){
     	this.name = name;
+    	bankrupt = false;
     	cash = 0;
 		companies  = new ArrayList<Company>();
     }
     
     public boolean transfer(Player p, int cash) {
     	if(cash > this.cash) {
-    		return false;
+    		p.cash += this.cash;
+    		this.cash -= this.cash;
+    		return true;
     	}
     	p.cash += cash;
     	this.cash -= cash;

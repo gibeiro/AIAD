@@ -25,6 +25,9 @@ public class Env extends Environment {
 	public static final Term flu = Literal.parseLiteral("fluctuate(game)");
 	public static final String gii = "investorIncome";
 	
+	public static final String mii = "managerIncome";
+	public static final String bnk = "bankrupt";
+	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
     /** Called before the MAS execution with the args informed in .mas2j */
@@ -40,6 +43,7 @@ public class Env extends Environment {
         try {
         	//If action is to join the game
         	if(action.equals(jg)) {
+        		//TODO dont let join after game starts
         		if(agName.contains("investor")) {
         			game.addInvestor(new Player(agName));
         		}else if(agName.contains("manager")) {
@@ -67,10 +71,19 @@ public class Env extends Environment {
         	else if(action.equals(flu)) {
         		game.fluctuate();
         	}
-        	//Give income to investors
+        	//Give income to investor
         	else if(action.getFunctor().equals(gii)) {
         		Integer income = Integer.parseInt(action.getTerm(1).toString());
         		game.giveInvestorIncome(action.getTerm(0).toString(),income);
+        	}
+        	//Give income to manager
+        	else if(action.getFunctor().equals(mii)) {
+        		Integer income = Integer.parseInt(action.getTerm(2).toString());
+        		game.giveManagerIncome(action.getTerm(0).toString(), action.getTerm(1).toString(), income);
+        	}
+        	//Bankrupt investor
+        	else if(action.getFunctor().equals(bnk)) {
+        		game.bankruptInvestor(action.getTerm(0).toString());
         	}
         }catch(Exception e) {
         	
