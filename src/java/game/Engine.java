@@ -204,9 +204,9 @@ public class Engine {
 		//NOTHING
 	}
 	//Add a company to a investor
-	public Message investCompany(String idi,String idm,String idc,int price) {
+	public void investCompany(String idi,String idm,String idc,int price) {
 		if(phase != Phase.negotiation) {
-			return new Message(false,"Not in negotiation phase");
+			return;
 		}
 		Investor investor = null;
 		Manager manager = null;
@@ -227,17 +227,17 @@ public class Engine {
 			}
 		}
 		if(investor == null) {
-			return new Message(false,"There is no such investor");
+			return;
 		}
 		if(manager == null) {
-			return new Message(false,"There is no such manager");
+			return;
 		}
 		if(company == null) {
-			return new Message(false,"Manager doesn't have this company");
+			return;
 		}
 		investor.addCompany(company);
 		company.price = price;
-		return new Message(true,"");
+		return;
 	}
 	
 	//----Investors phase methods----
@@ -262,12 +262,11 @@ public class Engine {
 		}
 	}
 	//Give income to investors
-	public  void giveInvestorsIncome() {
-		for(Investor p:investors) {
-			for(Company c:p.companies) {
-				p.cash += VALUES[c.color.index()][pointers[c.color.index()]] * c.multiplier;
-			}
+	public void giveInvestorIncome(String idi,int value) {
+		if(phase != Phase.managers) {
+			return;
 		}
+		Investor investor = null;
 	}
 	
 	//----Managers phase methods----
@@ -281,9 +280,9 @@ public class Engine {
 		//NOTHING
 	}
 	//Give income to managers
-	public  Message giveManagersIncome(String idm, String idi, int ammount) {
+	public  void giveManagersIncome(String idm, String idi, int ammount) {
 		if(phase != Phase.managers) {
-			return new Message(false,"Not in negotiation phase");
+			return;
 		}
 		Investor investor = null;
 		Manager manager = null;
@@ -299,16 +298,16 @@ public class Engine {
 			}
 		}
 		if(investor == null) {
-			return new Message(false,"There is no such investor");
+			return;
 		}
 		if(manager == null) {
-			return new Message(false,"There is no such manager");
+			return;
 		}
 		boolean transf = investor.transfer(manager, ammount);
 		if(transf) {
-			return new Message(true,"");
+			return;
 		}else {
-			return new Message(false,"Not enough money");
+			return;
 		}
 	}
 	
@@ -323,10 +322,10 @@ public class Engine {
 		//NOTHING
 	}
 	//Pay company fee
-	public  Message payFee(String idm) {
+	public void payFee(String idm) {
 
 		if(phase != Phase.payment) {
-			return new Message(false,"Not in negotiation phase");
+			return;
 		}
 		Manager manager = null;
 		for(Manager p : managers) {
@@ -335,18 +334,18 @@ public class Engine {
 			}
 		}
 		if(manager == null) {
-			return new Message(false,"There is no such manager");
+			return;
 		}
 		boolean success = manager.removeCash(10000);
 		if(success) {
-			return new Message(true,"");
+			return;
 		}
-		else return new Message(false,"Not enough cash");
+		else return;
 	}
 	//Remove a company and get 5k in return
-	public  Message removeCompany(String idm,String idc) {
+	public void removeCompany(String idm,String idc) {
 		if(phase != Phase.payment) {
-			return new Message(false,"Not in negotiation phase");
+			return;
 		}
 		Manager manager = null;
 		Company company = null;
@@ -356,7 +355,7 @@ public class Engine {
 			}
 		}
 		if(manager == null) {
-			return new Message(false,"There is no such manager");
+			return;
 		}
 		for(Company c:manager.companies) {
 			if(c.name.equals(idc)) {
@@ -364,12 +363,12 @@ public class Engine {
 			}
 		}
 		if(company == null) {
-			return new Message(false,"There is no such company");
+			return;
 		}
 		manager.addCash(5000);
 		manager.companies.remove(company);
 		reserve.add(company);
-		return new Message(true,"");
+		return;
 	}
 
 	//----Auction----
@@ -389,9 +388,9 @@ public class Engine {
 		reserve.remove(random);
 	}
 	//Buy company
-	public  Message buyCompany(int idm) {
+	public void buyCompany(int idm) {
 		if(phase != Phase.payment) {
-			return new Message(false,"Not in negotiation phase");
+			return;
 		}
 		Manager manager = null;
 		for(Manager p : managers) {
@@ -400,15 +399,15 @@ public class Engine {
 			}
 		}
 		if(manager == null) {
-			return new Message(false,"There is no such manager");
+			return;
 		}
 		if(manager.cash < 5000) {
-			return new Message(false,"Not enough money");
+			return;
 		}
 		manager.removeCash(5000);
 		manager.companies.add(auction);
 		auction = null;
-		return new Message(true,"");
+		return;
 	}
 	
 }
