@@ -30,10 +30,17 @@ beggining.
 	fluctuate(game);
 	//print fluctuations
 	.print("Doing fluctuation");
-	for(fluct(C,M)){
-		.print(C," companies fluctuation at ",M);
+	for(fluct(Color,Val)){
+		.print(Color," companies fluctuation at ",Val);
 	};
 	investorsIncome(game);
+	for(invests(Investor,Company,_)){
+		?company(Company,Color,Mult);
+		?fluct(Color,Value);
+		Income = Value * Mult;
+		investorIncome(Investor,Income);
+		.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
+	};
 	.wait(1000);
 	.print("---Managers Phase---");
 	next(phase);

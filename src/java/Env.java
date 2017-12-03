@@ -23,7 +23,7 @@ public class Env extends Environment {
 	public static final String prop = "acceptProposal";
 	
 	public static final Term flu = Literal.parseLiteral("fluctuate(game)");
-	public static final String gii = "investorsIncome";
+	public static final String gii = "investorIncome";
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -77,8 +77,9 @@ public class Env extends Environment {
         		game.fluctuate();
         	}
         	//Give income to investors
-        	else if(action.equals(gii)) {
-        		//game.giveInvestorIncome();
+        	else if(action.getFunctor().equals(gii)) {
+        		Integer income = Integer.parseInt(action.getTerm(1).toString());
+        		game.giveInvestorIncome(action.getTerm(0).toString(),income);
         	}
         }catch(Exception e) {
         	
