@@ -33,17 +33,6 @@ public class Env extends Environment {
         super.init(args);
         
         game = new Engine();
-        gui = new Interface();
-        EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Interface frame = new Interface();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
     }
 
     @Override
@@ -60,6 +49,8 @@ public class Env extends Environment {
         	}
         	//Initiate game
         	else if(action.equals(ig)) {
+                gui = new Interface(game);
+                gui.setVisible(true);
         		game.init();
         		logger.info("Initiated game");
         	}
@@ -85,7 +76,9 @@ public class Env extends Environment {
         }
         
         updatePercepts();
-        
+        if(gui != null) {
+        	gui.update(game);
+        }
         return true; // the action was executed with success
     }
     
