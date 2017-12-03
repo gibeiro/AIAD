@@ -13,9 +13,6 @@ public class Company {
             this.i = i;
         }
         public Integer index(){return i;}
-        public Color next(){
-        	return values()[++i];
-        }
         public String toString() {
         	if(i == 0) {
         		return "red";
@@ -30,23 +27,13 @@ public class Company {
         	return "red";
         }
 	};	
-    public enum Multiplier{
-        one(1),two(2);
-        private int mult;
-        private Multiplier(int m) {
-            this.mult = m;
-        }
-        public int value() {
-        	return mult;
-        }
-    };
+    public int multiplier;
 
     public int price;
     public Status status;
     public Color color;
-    public Multiplier multiplier;
 
-    public Company(String name, Color c, Multiplier m){
+    public Company(String name, Color c, int m){
     	int id = Company.globalNAMESs++;
     	if(name.equals("")) {
     		this.name = Integer.toString(id);

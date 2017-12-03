@@ -38,16 +38,14 @@ public class Engine {
 			{1,-1,1,-1,0,0}
 	};
 	//Fluctuations table
-	private  final Integer[][] VALUES = {
+	public  final Integer[][] VALUES = {
 			{-20,-10,0,30,40,50,60,70},
 			{-10,0,0,30,40,40,60,60},
 			{0,10,20,30,30,40,50,60},
 			{20,20,20,30,30,30,40,40}
 	};
 	//Fluctuation indexes at fluctuation table
-	private  Integer[] pointers = {3,3,3,3};
-	//Time available for negotiation
-	private  final Integer NEGOTIATION_PERIOD = 120;
+	public  Integer[] pointers = {3,3,3,3};
 	//Number of turns
 	private  final Integer NR_TURNS = 5;
 	//RNG
@@ -66,23 +64,6 @@ public class Engine {
 	//Current turn
 	private  Integer turn;
 	
-	
-	//----Variables needed for phase 3
-	//Debt for when an investor cant pay his manager
-	private static class Debt{
-		public Player payer;
-		public Player receiver;
-		public int ammount;
-		public Debt(Player payer,Player receiver, int ammount) {
-			this.payer = payer;
-			this.receiver = receiver;
-			this.ammount = ammount;
-		}
-	}
-	
-	private  List<Debt> debts = new ArrayList<Debt>();
-	
-	//----Variables needed for phase 5
 	//Auctioned company
 	private  Company auction;
 	//--------------GAME CYCLE---------------
@@ -112,12 +93,12 @@ public class Engine {
 		reserve = new ArrayList<Company>();
 		/* add regular 1x companies */
 		for(int i = 0; i < 11; i++) {
-			reserve.add(new Company("",Company.Color.yellow,Company.Multiplier.one));
-			reserve.add(new Company("",Company.Color.green,Company.Multiplier.one));
-			reserve.add(new Company("",Company.Color.blue,Company.Multiplier.one));
+			reserve.add(new Company("",Company.Color.yellow,1));
+			reserve.add(new Company("",Company.Color.green,1));
+			reserve.add(new Company("",Company.Color.blue,1));
 		}
 		for(int i = 0; i < 6; i++) {
-			reserve.add(new Company("",Company.Color.red,Company.Multiplier.one));
+			reserve.add(new Company("",Company.Color.red,1));
 		}	
 		
 		/* give players 120k cash */
@@ -136,11 +117,11 @@ public class Engine {
 		
 		/* add remaining 2x companies */
 		for(int i = 0; i < 2; i++) {
-			reserve.add(new Company("",Company.Color.yellow,Company.Multiplier.two));
-			reserve.add(new Company("",Company.Color.green,Company.Multiplier.two));
-			reserve.add(new Company("",Company.Color.blue,Company.Multiplier.two));
+			reserve.add(new Company("",Company.Color.yellow,2));
+			reserve.add(new Company("",Company.Color.green,2));
+			reserve.add(new Company("",Company.Color.blue,2));
 		}
-		reserve.add(new Company("",Company.Color.red,Company.Multiplier.two));
+		reserve.add(new Company("",Company.Color.red,2));
 		/* shuffle the companies -> useful coz u don't have to calc a random index
 		 * each time u access the list of companies and u can 'reserve.remove(reserve.size() - 1)'
 		 * to get a random company in constant time	
@@ -263,16 +244,15 @@ public class Engine {
 	
 	//Start investors phase
 	private  void startInvestors(){
-		fluctuate();
-		giveInvestorsIncome();
+		//NOTHING
 	}
 	//Finish investors phase
 	private  void finishInvestors(){
 		//NOTHING
 	}
 	//Fluctuate prices
-	private  void fluctuate(){
-		for(Company.Color c = Company.Color.red; c.index() < Company.Color.NR_COLORS; c.next()){
+	public  void fluctuate(){
+		for(Company.Color c : Company.Color.values()){
 			pointers[c.index()] += diceRoll(c);
 			if(pointers[c.index()] < 0) {
 				pointers[c.index()] = 0;
@@ -282,10 +262,10 @@ public class Engine {
 		}
 	}
 	//Give income to investors
-	private  void giveInvestorsIncome() {
+	public  void giveInvestorsIncome() {
 		for(Investor p:investors) {
 			for(Company c:p.companies) {
-				p.cash += VALUES[c.color.index()][pointers[c.color.index()]] * c.multiplier.value();
+				p.cash += VALUES[c.color.index()][pointers[c.color.index()]] * c.multiplier;
 			}
 		}
 	}
@@ -330,33 +310,6 @@ public class Engine {
 		}else {
 			return new Message(false,"Not enough money");
 		}
-	}
-	//Debts
-	public  Message createDebt(String idm, String idi, int ammount) {
-		if(phase != Phase.managers) {
-			return new Message(false,"Not in negotiation phase");
-		}
-		Investor investor = null;
-		Manager manager = null;
-		Company company=null;
-		for(Manager p : managers) {
-			if(p.name.equals(idm)) {
-				manager = (Manager) p;
-			}
-		}
-		for(Investor p : investors) {
-			if(p.name.equals(idm)) {
-				investor = (Investor) p;
-			}
-		}
-		if(investor == null) {
-			return new Message(false,"There is no such investor");
-		}
-		if(manager == null) {
-			return new Message(false,"There is no such manager");
-		}
-		debts.add(new Debt(investor,manager,ammount));
-		return new Message(true,"");
 	}
 	
 	//----Payment phase methods----

@@ -8,6 +8,7 @@ import java.awt.EventQueue;
 import java.util.logging.*;
 
 import game.Company;
+import game.Company.Color;
 import game.Engine;
 import game.Investor;
 import game.Manager;
@@ -19,7 +20,11 @@ public class Env extends Environment {
 	public static final Term jg = Literal.parseLiteral("join(game)");
 	public static final Term ig = Literal.parseLiteral("init(game)");
 	public static final Term np = Literal.parseLiteral("next(phase)");
+	
 	public static final String prop = "acceptProposal";
+	
+	public static final Term flu = Literal.parseLiteral("fluctuate(game)");
+	public static final Term gii = Literal.parseLiteral("investorsIncome(game)");
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -64,13 +69,17 @@ public class Env extends Environment {
         		game.nextPhase();
         	}
         	//Accept proposal in phase 1
-        	else if(action.toString().contains(prop)){
-        		String s = action.toString();
-        		s = s.substring(s.indexOf("("));
-        		s = s.substring(0,s.indexOf(")"));
-        		String[] parts = s.split(",");
-        		Double value = Double.parseDouble(parts[3]);
-        		game.investCompany(parts[0],parts[1],parts[2],value.intValue());
+        	else if(action.getFunctor().equals(prop)){
+        		Double value = Double.parseDouble(action.getTerm(3).toString());
+        		game.investCompany(action.getTerm(0).toString(),action.getTerm(1).toString(),action.getTerm(2).toString(),value.intValue());
+        	}
+        	//Do fluctuation
+        	else if(action.equals(flu)) {
+        		game.fluctuate();
+        	}
+        	//Give income to investors
+        	else if(action.equals(gii)) {
+        		game.giveInvestorsIncome();
         	}
         }catch(Exception e) {
         	
@@ -99,7 +108,7 @@ public class Env extends Environment {
     	//List of companies owned by managers
     	for(Manager m:game.managers) {
     		for(Company c:m.companies) {
-    			Literal com = Literal.parseLiteral("company(" + c.name + "," + c.color.toString() + "," + c.multiplier.value() + ")");
+    			Literal com = Literal.parseLiteral("company(" + c.name + "," + c.color.toString() + "," + c.multiplier + ")");
     			addPercept(com);
     			Literal own = Literal.parseLiteral("owns(" + m.name + "," + c.name + ")");
     			addPercept(own);
@@ -112,6 +121,11 @@ public class Env extends Environment {
     			addPercept(inv);
     		}
     	}
+    	//List of fluctuations
+    	for(Company.Color c : Company.Color.values()){
+			Literal inv = Literal.parseLiteral("fluct(" + c.toString() + "," + game.VALUES[c.index()][game.pointers[c.index()]] + ")");
+			addPercept(inv);
+		}
     }
 
     /** Called before the end of MAS execution */
