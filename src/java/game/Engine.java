@@ -56,8 +56,8 @@ public class Engine {
 		return DICE[c.index()][i];		
 	}		
 	//List of players
-	public  List<Investor> investors;
-	public  List<Manager> managers;
+	public  List<Player> investors;
+	public  List<Player> managers;
 	public  List<Company> reserve;
 	//Current phase
 	private  Phase phase;
@@ -73,16 +73,16 @@ public class Engine {
 	public Engine(){
 		this.phase = Phase.start;
 		this.turn = 0;
-		investors = new ArrayList<Investor>();
-		managers = new ArrayList<Manager>();
+		investors = new ArrayList<Player>();
+		managers = new ArrayList<Player>();
 		reserve = new ArrayList<Company>();
 	}
 	//Add new player
-	public  void addManager(Manager p){
+	public  void addManager(Player p){
 		managers.add(p);
 	}
 	
-	public  void addInvestor(Investor p){
+	public  void addInvestor(Player p){
 		investors.add(p);
 	}
 	//Init game
@@ -102,12 +102,12 @@ public class Engine {
 		}	
 		
 		/* give players 120k cash */
-		for(Manager p : managers) p.addCash(120000);
-		for(Investor p : investors) p.addCash(120000);
+		for(Player p : managers) p.addCash(120000);
+		for(Player p : investors) p.addCash(120000);
 		
 		/* give managers 3 random companies from the reserve */
 		Random r = new Random();
-		for(Manager m : managers) {
+		for(Player m : managers) {
 			for(int i = 0; i < 3; i++) {
 				Company c = reserve.get(r.nextInt(reserve.size()));
 				m.addCompany(c);
@@ -208,12 +208,12 @@ public class Engine {
 		if(phase != Phase.negotiation) {
 			return;
 		}
-		Investor investor = null;
-		Manager manager = null;
+		Player investor = null;
+		Player manager = null;
 		Company company=null;
-		for(Manager p : managers) {
+		for(Player p : managers) {
 			if(p.name.equals(idm)) {
-				manager = (Manager) p;
+				manager = p;
 				for(Company c : manager.companies) {
 					if(c.name.equals(idc)) {
 						company = c;
@@ -221,9 +221,9 @@ public class Engine {
 				}
 			}
 		}
-		for(Investor p : investors) {
-			if(p.name.equals(idm)) {
-				investor = (Investor) p;
+		for(Player p : investors) {
+			if(p.name.equals(idi)) {
+				investor = p;
 			}
 		}
 		if(investor == null) {
@@ -266,7 +266,16 @@ public class Engine {
 		if(phase != Phase.managers) {
 			return;
 		}
-		Investor investor = null;
+		Player investor = null;
+		for(Player p : investors) {
+			if(p.name.equals(idi)) {
+				investor = p;
+			}
+		}
+		if(investor == null) {
+			return;
+		}
+		investor.addCash(value);
 	}
 	
 	//----Managers phase methods----
@@ -284,17 +293,17 @@ public class Engine {
 		if(phase != Phase.managers) {
 			return;
 		}
-		Investor investor = null;
-		Manager manager = null;
+		Player investor = null;
+		Player manager = null;
 		Company company=null;
-		for(Manager p : managers) {
+		for(Player p : managers) {
 			if(p.name.equals(idm)) {
-				manager = (Manager) p;
+				manager = p;
 			}
 		}
-		for(Investor p : investors) {
+		for(Player p : investors) {
 			if(p.name.equals(idm)) {
-				investor = (Investor) p;
+				investor = p;
 			}
 		}
 		if(investor == null) {
@@ -327,10 +336,10 @@ public class Engine {
 		if(phase != Phase.payment) {
 			return;
 		}
-		Manager manager = null;
-		for(Manager p : managers) {
+		Player manager = null;
+		for(Player p : managers) {
 			if(p.name.equals(idm)) {
-				manager = (Manager) p;
+				manager = p;
 			}
 		}
 		if(manager == null) {
@@ -347,11 +356,11 @@ public class Engine {
 		if(phase != Phase.payment) {
 			return;
 		}
-		Manager manager = null;
+		Player manager = null;
 		Company company = null;
-		for(Manager p : managers) {
+		for(Player p : managers) {
 			if(p.name.equals(idm)) {
-				manager = (Manager) p;
+				manager = p;
 			}
 		}
 		if(manager == null) {
@@ -392,10 +401,10 @@ public class Engine {
 		if(phase != Phase.payment) {
 			return;
 		}
-		Manager manager = null;
-		for(Manager p : managers) {
+		Player manager = null;
+		for(Player p : managers) {
 			if(p.name.equals(idm)) {
-				manager = (Manager) p;
+				manager = p;
 			}
 		}
 		if(manager == null) {

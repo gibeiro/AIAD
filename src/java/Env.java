@@ -10,8 +10,7 @@ import java.util.logging.*;
 import game.Company;
 import game.Company.Color;
 import game.Engine;
-import game.Investor;
-import game.Manager;
+import game.Player;
 
 public class Env extends Environment {
 	private Engine game;
@@ -53,9 +52,9 @@ public class Env extends Environment {
         	//If action is to join the game
         	if(action.equals(jg)) {
         		if(agName.contains("investor")) {
-        			game.addInvestor(new Investor(agName));
+        			game.addInvestor(new Player(agName));
         		}else if(agName.contains("manager")) {
-        			game.addManager(new Manager(agName));
+        			game.addManager(new Player(agName));
         		}
         		logger.info(agName + " joined game");
         	}
@@ -97,16 +96,16 @@ public class Env extends Environment {
     	Literal state = Literal.parseLiteral("state(" + game.getPhase() + ")");
     	addPercept(state);
     	//List of players in the game
-    	for(Investor i:game.investors) {
+    	for(Player i:game.investors) {
     		Literal inv = Literal.parseLiteral("player(investor," + i.name +"," + i.cash + ")");
     		addPercept(inv);
     	}
-    	for(Manager m:game.managers) {
+    	for(Player m:game.managers) {
     		Literal man = Literal.parseLiteral("player(manager," + m.name + "," + m.cash + ")");
     		addPercept(man);
     	}
     	//List of companies owned by managers
-    	for(Manager m:game.managers) {
+    	for(Player m:game.managers) {
     		for(Company c:m.companies) {
     			Literal com = Literal.parseLiteral("company(" + c.name + "," + c.color.toString() + "," + c.multiplier + ")");
     			addPercept(com);
@@ -115,7 +114,7 @@ public class Env extends Environment {
     		}
     	}
     	//List of companies invested
-    	for(Investor i:game.investors) {
+    	for(Player i:game.investors) {
     		for(Company c:i.companies) {
     			Literal inv = Literal.parseLiteral("invests(" + i.name + "," + c.name + "," + c.price + ")");
     			addPercept(inv);
