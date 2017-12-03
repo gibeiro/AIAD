@@ -77,8 +77,23 @@ beggining.
 +state(payment):canPayment <-
 	+canManagers;
 	-canPayment;
-	//Code
+	!payManag;
 	+canAuction.
+	
++!payManag : true <-
+	.my_name(Me);
+	//Se nao tiver dinheiro para pagar todas as empresas, vender s suficientes até ser possível
+	while(.count(owns(Me,_),NC) & player(_,Me,Cash) & Cash < NC * 10000){
+		.findall(Company,owns(Me,Company),List);
+		.shuffle(List,List2);
+		.nth(0,List2,ToSell);
+		sellCompany(Me,ToSell);
+		.print("Sold company ",ToSell, " for 5000");
+	}
+	for(owns(Me,Company)){
+		payFee(Me,10000);
+		.print("Payed 10000 fee for owning the company ",Company);
+	}.
 	
 /*Auction phase*/
 

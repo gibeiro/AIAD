@@ -28,6 +28,9 @@ public class Env extends Environment {
 	public static final String mii = "managerIncome";
 	public static final String bnk = "bankrupt";
 	
+	public static final String sec = "sellCompany";
+	public static final String fee = "payFee";
+	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
     /** Called before the MAS execution with the args informed in .mas2j */
@@ -84,6 +87,15 @@ public class Env extends Environment {
         	//Bankrupt investor
         	else if(action.getFunctor().equals(bnk)) {
         		game.bankruptInvestor(action.getTerm(0).toString());
+        	}
+        	//Sell company
+        	else if(action.getFunctor().equals(sec)) {
+        		game.sellCompany(action.getTerm(0).toString(),action.getTerm(1).toString());
+        	}
+        	//Pay fee for company
+        	else if(action.getFunctor().equals(fee)) {
+        		Integer value = Integer.parseInt(action.getTerm(1).toString());
+        		game.payFee(action.getTerm(0).toString(),value);
         	}
         }catch(Exception e) {
         	

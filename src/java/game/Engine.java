@@ -329,11 +329,7 @@ public class Engine {
 		//NOTHING
 	}
 	//Pay company fee
-	public void payFee(String idm) {
-
-		if(phase != Phase.payment) {
-			return;
-		}
+	public void payFee(String idm,int ammount) {
 		Player manager = null;
 		for(Player p : managers) {
 			if(p.name.equals(idm)) {
@@ -343,14 +339,10 @@ public class Engine {
 		if(manager == null) {
 			return;
 		}
-		boolean success = manager.removeCash(10000);
-		if(success) {
-			return;
-		}
-		else return;
+		manager.removeCash(ammount);
 	}
 	//Remove a company and get 5k in return
-	public void removeCompany(String idm,String idc) {
+	public void sellCompany(String idm,String idc) {
 		if(phase != Phase.payment) {
 			return;
 		}

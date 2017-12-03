@@ -25,7 +25,7 @@ beggining.
 	+firstOne;
 	+canInvestors.
 
-//Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose
+//Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose which one(s) to take
 +selling(_,_) : firstOne <- -firstOne;.wait(1000);!chooseCompanies.
 
 +!chooseCompanies <- 
@@ -46,7 +46,7 @@ beggining.
 +state(investors):canInvestors <-
 	+canNegotiation;
 	-canInvestors;
-	//Code
+	//Nothing to be done here
 	+canManagers.
 	
 /*Managers phase*/
@@ -54,7 +54,7 @@ beggining.
 +state(managers):canManagers <-
 	+canInvestors;
 	-canManagers;
-	//Code
+	//Nothing to be done here
 	+canPayment.
 	
 +payInc(Manager,Ammount) <-

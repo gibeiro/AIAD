@@ -37,7 +37,7 @@ beggining.
 	for(invests(Investor,Company,_)){
 		?company(Company,Color,Mult);
 		?fluct(Color,Value);
-		Income = Value * Mult;
+		Income = Value * Mult * 1000;
 		investorIncome(Investor,Income);
 		.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
 	};
