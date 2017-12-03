@@ -116,12 +116,16 @@ public class Env extends Environment {
     	addPercept(state);
     	//List of players in the game
     	for(Player i:game.investors) {
-    		Literal inv = Literal.parseLiteral("player(investor," + i.name +"," + i.cash + ")");
-    		addPercept(inv);
+    		if(!i.bankrupt) {
+    			Literal inv = Literal.parseLiteral("player(investor," + i.name +"," + i.cash + ")");
+        		addPercept(inv);
+    		}
     	}
     	for(Player m:game.managers) {
-    		Literal man = Literal.parseLiteral("player(manager," + m.name + "," + m.cash + ")");
-    		addPercept(man);
+    		if(!m.bankrupt) {
+    			Literal man = Literal.parseLiteral("player(manager," + m.name + "," + m.cash + ")");
+    			addPercept(man);
+    		}
     	}
     	//List of companies owned by managers
     	for(Player m:game.managers) {
