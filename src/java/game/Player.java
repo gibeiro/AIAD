@@ -28,8 +28,9 @@ public class Player{
     }
     
     public boolean removeCash(int cash) {
-    	if(this.cash < cash)
-    		return false;
+    	if(this.cash < cash) {
+    		this.cash = 0;
+    	}
     	this.cash -= cash;
     	return true;
     }
