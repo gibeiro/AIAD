@@ -31,7 +31,7 @@ beggining.
 	//print fluctuations
 	!doFluct;
 	!doIncome;
-	.wait(1000);
+	.wait(500);
 	.print("---Managers Phase---");
 	next(phase);
 	!doState.
@@ -52,13 +52,13 @@ beggining.
 	}.
 	
 +!doState : state(managers) <- 
-	.wait(1000);
+	.wait(500);
 	.print("---Payment Phase---");
 	next(phase);
 	!doState.
 	
 +!doState : state(payment) <- 
-	.wait(1000);
+	.wait(500);
 	.print("---Auction Phase---");
 	next(phase);
 	!doState.
@@ -83,7 +83,7 @@ beggining.
 	.print("Auctioning ", Color ," company ", Company, " with mult of" , Mult);
 	.findall(Name,player(manager,Name,_),LI);
 	.send(LI,tell,aucStart);
-	.wait(1000);
+	.wait(500);
 	if(.count(place_bid(_),NN) & NN > 0){
 		.findall(offer(V,M),place_bid(V)[source(M)],Offers);
 		.max(Offers,offer(Val,Man));

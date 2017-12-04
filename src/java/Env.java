@@ -108,7 +108,6 @@ public class Env extends Environment {
         	//Pay fee for company
         	else if(action.getFunctor().equals(giv)) {
         		Double value = Double.parseDouble(action.getTerm(1).toString());
-        		logger.info("xDDD" + value);
         		game.sellAuction(action.getTerm(0).toString(),value.intValue());
         	}
         	//Pay fee for company

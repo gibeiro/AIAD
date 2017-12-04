@@ -169,9 +169,6 @@ public class Engine {
 	}
 	
 	public String getPhase() {
-		if(phase == Phase.negotiation) {
-			return "negotiation";
-		}
 		switch(phase){
 		case start:
 			return "start";
@@ -342,9 +339,6 @@ public class Engine {
 	}
 	//Remove a company and get 5k in return
 	public void sellCompany(String idm,String idc) {
-		if(phase != Phase.payment) {
-			return;
-		}
 		Player manager = null;
 		Company company = null;
 		for(Player p : managers) {
