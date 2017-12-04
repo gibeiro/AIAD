@@ -35,7 +35,7 @@ beggining.
 	.my_name(Me);
 	?player(_,Me,Cash);
 	.random(Rand);
-	Value = (Cash*Rand);
+	Value = (Cash*Rand)/2;
 	.send(ToSend,tell,propose(Me,Company,Value)).
 	
 //Investors phase

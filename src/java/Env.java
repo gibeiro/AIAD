@@ -32,6 +32,8 @@ public class Env extends Environment {
 	public static final String fee = "payFee";
 	
 	public static final Term fet = Literal.parseLiteral("pop(auction)");
+	public static final String giv = "sellTo";
+	public static final Term cln = Literal.parseLiteral("clean(auction)");
 	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
@@ -102,6 +104,16 @@ public class Env extends Environment {
         	//Pay fee for company
         	else if(action.equals(fet)) {
         		game.toAuction();
+        	}
+        	//Pay fee for company
+        	else if(action.getFunctor().equals(giv)) {
+        		Double value = Double.parseDouble(action.getTerm(1).toString());
+        		logger.info("xDDD" + value);
+        		game.sellAuction(action.getTerm(0).toString(),value.intValue());
+        	}
+        	//Pay fee for company
+        	else if(action.equals(cln)) {
+        		game.discardAuction();
         	}
         }catch(Exception e) {
         	

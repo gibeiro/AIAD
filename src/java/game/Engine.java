@@ -391,10 +391,7 @@ public class Engine {
 		}
 	}
 	//Buy company
-	public void sellCompany(int idm) {
-		if(phase != Phase.payment) {
-			return;
-		}
+	public void sellAuction(String idm,int offer) {
 		Player manager = null;
 		for(Player p : managers) {
 			if(p.getName().equals(idm)) {
@@ -404,13 +401,16 @@ public class Engine {
 		if(manager == null) {
 			return;
 		}
-		if(manager.getCash() < 5000) {
+		if(manager.getCash() < offer) {
 			return;
 		}
-		manager.removeCash(5000);
+		manager.removeCash(offer);
 		manager.addCompany(auction);
-		auction = null;
 		return;
+	}
+	//Set auction to null
+	public void discardAuction() {
+		auction = null;
 	}
 	
 }

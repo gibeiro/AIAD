@@ -79,7 +79,23 @@ beggining.
 		-+nAuctions(N-1);
 	}.
 //Do an auction of a company
-+!doAuction : auction(Company,Color,Mult).
++!doAuction : auction(Company,Color,Mult) <-
+	.print("Auctioning ", Color ," company ", Company, " with mult of" , Mult);
+	.findall(Name,player(manager,Name,_),LI);
+	.send(LI,tell,aucStart);
+	.wait(1000);
+	if(.count(place_bid(_),NN) & NN > 0){
+		.findall(offer(V,M),place_bid(V)[source(M)],Offers);
+		.max(Offers,offer(Val,Man));
+		.print("Winner is ",Man, " with an offer of ",Val);
+		sellTo(Man,Val);
+	}else{
+		.print("No one wanted to buy this company");
+	}
+	clean(auction);
+	.abolish(offer(_,_));
+	.abolish(place_bid(_)).
+	
 
 //Do nothing if there are no more companies to auction
 +!doAuction : not auction(_,_,_).
