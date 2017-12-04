@@ -29,22 +29,27 @@ beggining.
 +!doState : state(investors) <- 
 	fluctuate(game);
 	//print fluctuations
+	!doFluct;
+	!doIncome;
+	.wait(1000);
+	.print("---Managers Phase---");
+	next(phase);
+	!doState.
+	
++!doFluct : true <-
 	.print("Doing fluctuation...");
 	for(fluct(Color,Val)){
 		.print(Color," companies fluctuation at ",Val);
-	};
-	investorsIncome(game);
+	}.
+	
++!doIncome : true <-
 	for(invests(Investor,Company,_)){
 		?company(Company,Color,Mult);
 		?fluct(Color,Value);
 		Income = Value * Mult * 1000;
 		investorIncome(Investor,Income);
 		.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
-	};
-	.wait(1000);
-	.print("---Managers Phase---");
-	next(phase);
-	!doState.
+	}.
 	
 +!doState : state(managers) <- 
 	.wait(1000);
@@ -59,10 +64,18 @@ beggining.
 	!doState.
 	
 +!doState : state(auction) <- 
-	.wait(1000);
+	!doAuctions;
 	.print("---Negotiation Phase---");
 	next(phase);
 	!doState.
+	
++!doAuctions : true <-
+	.count(player(manager,_,_),NMan);
+	NAuct = (NMan * 2) - 1;
+	+nAuctions(NAuct);
+	while(nAuctions(N) & N > 0){
+		-+nAuctions(N-1);
+	}.
 	
 +!doState : state(end) <- 
 	.print("---Game ended---").

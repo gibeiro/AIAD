@@ -82,7 +82,7 @@ beggining.
 	
 +!payManag : true <-
 	.my_name(Me);
-	//Se nao tiver dinheiro para pagar todas as empresas, vender s suficientes até ser possível
+	//Se nao tiver dinheiro para pagar todas as empresas, vender suficientes até ser possível
 	while(.count(owns(Me,_),NC) & player(_,Me,Cash) & Cash < NC * 10000){
 		.findall(Company,owns(Me,Company),List);
 		.shuffle(List,List2);
