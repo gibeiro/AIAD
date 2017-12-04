@@ -71,11 +71,19 @@ beggining.
 	
 +!doAuctions : true <-
 	.count(player(manager,_,_),NMan);
-	NAuct = (NMan * 2) - 1;
+	NAuct = (NMan * 2) - 1; // Number of auctions = 2*NManagers - 1
 	+nAuctions(NAuct);
 	while(nAuctions(N) & N > 0){
+		pop(auction);
+		!doAuction;
 		-+nAuctions(N-1);
 	}.
+//Do an auction of a company
++!doAuction : auction(Company,Color,Mult).
+
+//Do nothing if there are no more companies to auction
++!doAuction : not auction(_,_,_).
+	
 	
 +!doState : state(end) <- 
 	.print("---Game ended---").

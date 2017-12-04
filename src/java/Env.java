@@ -31,6 +31,8 @@ public class Env extends Environment {
 	public static final String sec = "sellCompany";
 	public static final String fee = "payFee";
 	
+	public static final Term fet = Literal.parseLiteral("pop(auction)");
+	
     private Logger logger = Logger.getLogger("pows."+Env.class.getName());
 
     /** Called before the MAS execution with the args informed in .mas2j */
@@ -97,6 +99,10 @@ public class Env extends Environment {
         		Integer value = Integer.parseInt(action.getTerm(1).toString());
         		game.payFee(action.getTerm(0).toString(),value);
         	}
+        	//Pay fee for company
+        	else if(action.equals(fet)) {
+        		game.toAuction();
+        	}
         }catch(Exception e) {
         	
         }
@@ -148,6 +154,11 @@ public class Env extends Environment {
 			Literal inv = Literal.parseLiteral("fluct(" + c.toString() + "," + game.VALUES[c.index()][game.pointers[c.index()]] + ")");
 			addPercept(inv);
 		}
+    	//Auctioned company
+    	if(game.auction != null) {
+    		Literal auc = Literal.parseLiteral("auction(" + game.auction.getName() + "," + game.auction.getColor().toString() + "," + game.auction.getMultiplier() + ")");
+    		addPercept(auc);
+    	}
     }
 
     /** Called before the end of MAS execution */

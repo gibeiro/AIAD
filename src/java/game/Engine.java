@@ -65,7 +65,7 @@ public class Engine {
 	private  Integer turn;
 	
 	//Auctioned company
-	private  Company auction;
+	public Company auction;
 	//--------------GAME CYCLE---------------
 	
 	
@@ -381,12 +381,17 @@ public class Engine {
 	}
 	//Remove company from reserve to auction
 	public  void toAuction() {
-		int random = new Random().nextInt(reserve.size());
-		Company c = reserve.get(random);
-		reserve.remove(random);
+		if(reserve.size() > 0) {
+			int random = new Random().nextInt(reserve.size());
+			Company c = reserve.get(random);
+			reserve.remove(c);
+			auction = c;
+		}else {
+			auction = null;
+		}
 	}
 	//Buy company
-	public void buyCompany(int idm) {
+	public void sellCompany(int idm) {
 		if(phase != Phase.payment) {
 			return;
 		}
