@@ -26,7 +26,7 @@ beggining.
 	+canInvestors.
 
 //Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose which one(s) to take
-+selling(_,_) : firstOne <- -firstOne;.wait(1000);!chooseCompanies.
++selling(_,_) : firstOne <- -firstOne;.wait(500);!chooseCompanies.
 
 +!chooseCompanies <- 
 	.findall([M,C],selling(M,C),LS);

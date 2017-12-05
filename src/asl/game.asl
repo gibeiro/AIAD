@@ -27,7 +27,6 @@ beggining.
 	!doState.
 	
 +!doState : state(investors) <- 
-	fluctuate(game);
 	//print fluctuations
 	!doFluct;
 	!doIncome;
@@ -38,6 +37,7 @@ beggining.
 	
 +!doFluct : true <-
 	.print("Doing fluctuation...");
+	fluctuate(game);
 	for(fluct(Color,Val)){
 		.print(Color," companies fluctuation at ",Val);
 	}.

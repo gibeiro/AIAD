@@ -47,6 +47,7 @@ public class Env extends Environment {
 
     @Override
     public boolean executeAction(String agName, Structure action) {
+    	boolean updateAllPercepts = true;
         try {
         	//If action is to join the game
         	if(action.equals(jg)) {
@@ -117,8 +118,9 @@ public class Env extends Environment {
         }catch(Exception e) {
         	
         }
+        if(updateAllPercepts)
+        	updatePercepts();
         
-        updatePercepts();
         if(gui != null) {
         	gui.update(game);
         }
