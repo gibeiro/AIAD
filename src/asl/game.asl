@@ -16,6 +16,8 @@ beggining.
 	-beggining;
 	.print("Waiting for players");
 	.wait(2000);
+	?turn(N);
+	.print("----Turn ",N, "----");
 	.print("---Negotiation Phase---");
 	init(game);
 	!doState.
@@ -48,6 +50,7 @@ beggining.
 		?fluct(Color,Value);
 		Income = Value * Mult * 1000;
 		investorIncome(Investor,Income);
+		.wait(50);
 		.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
 	}.
 	
@@ -65,6 +68,8 @@ beggining.
 	
 +!doState : state(auction) <- 
 	!doAuctions;
+	?turn(N);
+	.print("----Turn ",N, "----");
 	.print("---Negotiation Phase---");
 	next(phase);
 	!doState.

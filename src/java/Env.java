@@ -130,6 +130,9 @@ public class Env extends Environment {
     public synchronized void updatePercepts() {
     	//Clear global percepts(not individual ones)
     	clearPercepts();
+    	//Game round
+    	Literal turn = Literal.parseLiteral("turn(" + game.turn + ")");
+    	addPercept(turn);
     	//Game state
     	Literal state = Literal.parseLiteral("state(" + game.getPhase() + ")");
     	addPercept(state);

@@ -62,7 +62,7 @@ public class Engine {
 	//Current phase
 	private  Phase phase;
 	//Current turn
-	private  Integer turn;
+	public  Integer turn;
 	
 	//Auctioned company
 	public Company auction;
@@ -356,6 +356,12 @@ public class Engine {
 		}
 		if(company == null) {
 			return;
+		}
+		for(Player p:investors) {
+			for(Company c:p.getCompanies()) {
+				if(c.getName().equals(idc))
+					p.removeCompany(c);
+			}
 		}
 		manager.addCash(5000);
 		manager.removeCompany(company);
