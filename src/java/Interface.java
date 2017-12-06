@@ -98,6 +98,11 @@ public class Interface extends JFrame {
 		label.setOpaque(true);
 		panel_1.add(label);
 		
+		JLabel lblXxx = new JLabel("xxx \u20AC");
+		lblXxx.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblXxx.setBounds(136, 42, 56, 16);
+		panel_1.add(lblXxx);
+		
 		JLabel lblXxxxxx = new JLabel("XXXXXX \u20AC");
 		lblXxxxxx.setHorizontalAlignment(SwingConstants.CENTER);
 		lblXxxxxx.setBounds(113, 61, 103, 16);
@@ -300,6 +305,11 @@ public class Interface extends JFrame {
 					break;
 				}
 				panel_companies.add(lblCompanie_1);
+				
+				JLabel lblCost = new JLabel(Integer.toString(game.investors.get(i).getCompanies().get(j).getPrice()) + " \u20AC");
+				lblCost.setHorizontalAlignment(SwingConstants.RIGHT);
+				lblCost.setBounds(136, 42+29*j, 56, 16);
+				panel_companies.add(lblCost);
 			}
 			
 			panel_companies.revalidate();
