@@ -93,7 +93,9 @@ public class Interface extends JFrame {
 		panel_1.add(lblNewLabel_2);
 		
 		JLabel label = new JLabel("New label");
+		label.setBackground(Color.RED);
 		label.setBounds(12, 71, 56, 16);
+		label.setOpaque(true);
 		panel_1.add(label);
 		
 		JLabel lblXxxxxx = new JLabel("XXXXXX \u20AC");
@@ -142,6 +144,24 @@ public class Interface extends JFrame {
 				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
 				logger.info("name -> -> " + game.managers.get(i).getCompanies().get(j).getName() + "\n");
 				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				lblCompanie_1.setOpaque(true);
+				switch(game.managers.get(i).getCompanies().get(j).getColor().toString()) {
+				case "red":
+					lblCompanie_1.setBackground(Color.RED);
+					break;
+				case "yellow":
+					lblCompanie_1.setBackground(Color.YELLOW);
+					break;
+				case "green":
+					lblCompanie_1.setBackground(Color.GREEN);
+					break;
+				case "blue":
+					lblCompanie_1.setBackground(Color.BLUE);
+					break;
+				default:
+					lblCompanie_1.setOpaque(false);
+					break;
+				}
 				panel_companies.add(lblCompanie_1);
 			}
 		}
@@ -199,7 +219,11 @@ public class Interface extends JFrame {
 	public void update(Engine game) {
 		for(int i=0;i<game.managers.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(i);
-			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
+			if(game.managers.get(i).isBankrupt()) {
+				((JLabel)panel.getComponent(2)).setText("BANKRUPT");
+			}else {
+				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
+			}
 			
 			JPanel panel_companies = (JPanel)panel.getComponent(3);
 			panel_companies.removeAll();
@@ -213,6 +237,24 @@ public class Interface extends JFrame {
 			for(int j=0;j<game.managers.get(i).getCompanies().size();j++) {
 				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
 				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				lblCompanie_1.setOpaque(true);
+				switch(game.managers.get(i).getCompanies().get(j).getColor().toString()) {
+				case "red":
+					lblCompanie_1.setBackground(Color.RED);
+					break;
+				case "yellow":
+					lblCompanie_1.setBackground(Color.YELLOW);
+					break;
+				case "green":
+					lblCompanie_1.setBackground(Color.GREEN);
+					break;
+				case "blue":
+					lblCompanie_1.setBackground(Color.BLUE);
+					break;
+				default:
+					lblCompanie_1.setOpaque(false);
+					break;
+				}
 				panel_companies.add(lblCompanie_1);
 			}
 			
@@ -221,7 +263,11 @@ public class Interface extends JFrame {
 		}
 		for(int i=0;i<game.investors.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(game.managers.size()+i);
-			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
+			if(game.investors.get(i).isBankrupt()) {
+				((JLabel)panel.getComponent(2)).setText("BANKRUPT");
+			}else {
+				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
+			}
 			
 			JPanel panel_companies = (JPanel)panel.getComponent(3);
 			panel_companies.removeAll();
@@ -235,6 +281,24 @@ public class Interface extends JFrame {
 			for(int j=0;j<game.investors.get(i).getCompanies().size();j++) {
 				JLabel lblCompanie_1 = new JLabel(game.investors.get(i).getCompanies().get(j).getName());
 				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				lblCompanie_1.setOpaque(true);
+				switch(game.investors.get(i).getCompanies().get(j).getColor().toString()) {
+				case "red":
+					lblCompanie_1.setBackground(Color.RED);
+					break;
+				case "yellow":
+					lblCompanie_1.setBackground(Color.YELLOW);
+					break;
+				case "green":
+					lblCompanie_1.setBackground(Color.GREEN);
+					break;
+				case "blue":
+					lblCompanie_1.setBackground(Color.BLUE);
+					break;
+				default:
+					lblCompanie_1.setOpaque(false);
+					break;
+				}
 				panel_companies.add(lblCompanie_1);
 			}
 			
