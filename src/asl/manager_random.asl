@@ -23,32 +23,44 @@ beggining.
 	+canAuction;
 	-canNegotiation;
 	.print("Im open for proposals!");
-	!startCNP;
+	!startEA;
 	+canInvestors.
 
 //Send to all investors the companies i'm selling
-+!startCNP : true <-
++!startEA : true <-
 	.findall(Name,player(investor,Name,_),LI);
 	.my_name(Me);
 	for(owns(Me,Comp)){
-		.send(LI,tell,selling(Me,Comp))
-	};
-	+firstOne.
-//Process proposals from investors
-+propose(_,_,_) : firstOne<-
-	-firstOne;.wait(1000);!chooseProposals.
-	
-+!chooseProposals <- 
-	.findall([I,C,V],propose(I,C,V),LS);
-	.shuffle(LS,LS2);
-	.nth(0,LS2,[Inv,Comp,Val]);
-	.my_name(Me);
-	acceptProposal(Inv,Me,Comp,Val);
-	.print("Accepted proposal for company ", Comp, " by investor ",Inv," for ",Val).
+		.send(LI,tell,selling(Comp,0,1));
+	}.
+
+@pb1[atomic]
++propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) <-
+	//wait for all proposals
+	.wait(500);
+	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
+	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
+	.length(List,L);
+	.print(L);
+	if(L == 1){
+		.max(List,b(V,W));
+		.print("Winner is ",W, " with an offer of ",V);
+	}
+	if(not L == 1){
+		.max(List,b(V,W));
+		//Price has to be bigger than previously biggest offer
+		Phase2 = Phase+1;
+		.send(ListBuyers,tell,selling(Comp,V,Phase2));
+	}
+	.abolish(propose(Comp,_,Phase));
+	+didPhase(Comp,Phase);
+.
 
 /*Investors phase*/
 
 +state(investors):canInvestors <-
+	.abolish(didPhase(_,_));
+	.abolish(endSale(_));
 	+canNegotiation;
 	-canInvestors;
 	//Nothing to do here

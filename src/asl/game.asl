@@ -22,8 +22,13 @@ beggining.
 	init(game);
 	!doState.
 	
+	
++endSale(_) : .count(owns(Me,_),N) & .count(endSale(_),N2) & N = N2 <-
+	.my_name(Me);
+	.send(game,tell,doneSelling(Me)).
+	
 +!doState : state(negotiation) <- 
-	.wait(5000);
+	.wait(10000);
 	.print("---Investors Phase---");
 	next(phase);
 	!doState.

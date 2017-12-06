@@ -26,24 +26,34 @@ beggining.
 	+canInvestors.
 
 //Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose which one(s) to take
-+selling(_,_) : firstOne <- -firstOne;.wait(500);!chooseCompanies.
++selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation) <-
+	.random(N);
+	N1 = N*100;
+	//50% chance to offer a proposal to the manager
+	if(N1 < 50){
+		.random(N2);
+		Offer = N2 * 60000;
+		.send(Manager,tell,propose(Company,Offer,Phase));
+	}
+	.abolish(selling(Company,MinPrice,_))
+.
 
-+!chooseCompanies <- 
-	.findall([M,C],selling(M,C),LS);
-	.shuffle(LS,LS2);
-	.nth(0,LS2,[ToSend,Company]);
-	.my_name(Me);
-	?player(_,Me,Cash);
-	.random(Rand);
-	Value = (Cash*Rand)/2;
-	.send(ToSend,tell,propose(Me,Company,Value)).
++selling(Company,MinPrice,Phase)[source(Manager)] : not Phase = 1 & state(negotiation) <-
+	.random(N);
+	N1 = N*100;
+	//50% chance to offer a proposal to the manager
+	if(N1 < 50){
+		.random(N2);
+		Offer = MinPrice + N2 * 10000;
+		.send(Manager,tell,propose(Company,Offer,Phase));
+	}
+	.abolish(selling(Company,MinPrice,_))
+.
 	
 //Investors phase
-
-+state(investors) <-
-	.abolish(selling(_,_)).
 	
 +state(investors):canInvestors <-
+	.abolish(selling(_,_));
 	+canNegotiation;
 	-canInvestors;
 	//Nothing to be done here

@@ -194,7 +194,17 @@ public class Engine {
 	
 	//Start negotiation phase
 	private void startNegotiation(){
-		//NOTHING
+		for(Player p : investors) {
+			for(Company c: p.getCompanies()) {
+				c.setPrice(0);
+			}
+			p.clearCompanies();
+		}
+		for(Player p : managers) {
+			for(Company c: p.getCompanies()) {
+				c.setPrice(0);
+			}
+		}
 	}
 	//Finish negotiation phase, distribute companies
 	private void finishNegotiation(){
