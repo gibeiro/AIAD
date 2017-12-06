@@ -40,6 +40,7 @@ beggining.
 +!doFluct : true <-
 	.print("Doing fluctuation...");
 	fluctuate(game);
+	.wait(.count(fluct(Color,_),4),1000);
 	for(fluct(Color,Val)){
 		.print(Color," companies fluctuation at ",Val);
 	}.

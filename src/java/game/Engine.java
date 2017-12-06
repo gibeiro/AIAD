@@ -231,6 +231,10 @@ public class Engine {
 		}
 		investor.addCompany(company);
 		company.setPrice(price);
+		for(Player p:investors) {
+			if(p != investor)
+				p.removeCompany(company);
+		}
 		return;
 	}
 	

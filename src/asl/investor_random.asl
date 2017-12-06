@@ -57,12 +57,6 @@ beggining.
 	//Nothing to be done here
 	+canPayment.
 	
-+payInc(Manager,Ammount) <-
-	-payInc(Manager,Ammount);
-	.my_name(Me);
-	managerIncome(Manager,Me,Ammount);
-	.print("Payed ",Manager, " an ammount of ",Ammount).
-	
 /*Payment phase*/
 
 +state(payment):canPayment <-

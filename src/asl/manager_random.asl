@@ -60,6 +60,7 @@ beggining.
 	+canInvestors;
 	-canManagers;
 	!collectIncome;
+	!bankruptInvestors;
 	+canPayment.
 	
 +!collectIncome : true <-
@@ -67,12 +68,21 @@ beggining.
 	for(owns(Me,Company) & invests(Investor,Company,Price)){
 		?player(investor,Investor,Cash);
 		if(Cash >= Price){
-			.send(Investor,tell,payInc(Me,Price));
+			.print("Investor ",Investor," payed me ",Price);
+			managerIncome(Me,Investor,Price);
+			.wait(.count(ready(env),1),100);
 		}else{
-			bankrupt(Investor);
-			.print("Investor ",Investor," went bankrupt");
+			+bankrupt(Investor);
 		}
 	}.
+
++!bankruptInvestors : true <-
+	for(bankrupt(Investor)){
+		.print("Investor ",Investor," went bankrupt");
+		bankrupt(Investor);
+	}
+	.abolish(bankrupt(_))
+.
 /*Payment phase*/
 
 +state(payment):canPayment <-
@@ -84,20 +94,18 @@ beggining.
 +!payManag : true <-
 	.my_name(Me);
 	//Se nao tiver dinheiro para pagar todas as empresas, vender suficientes até ser possível
-	while(.count(owns(Me,_),NC) & player(_,Me,Cash) & Cash < NC * 10000){
-		.findall(Company,owns(Me,Company),List);
+	while( player(_,Me,Cash) & .findall(Company,owns(Me,Company),List) & .length(List,NC) & Cash < NC * 10000){
 		.shuffle(List,List2);
-		.length(List2,NNNN);
-		.print("I OWN ",NNNN);
 		.nth(0,List2,ToSell);
 		sellCompany(Me,ToSell);
-		.print("Sold company ",ToSell, " for 5000")
+		.print("Sold company ",ToSell, " for 5000");
+		.wait(.count(ready(env),1),100)
 	}
 	for(owns(Me,Company)){
 		payFee(Me,10000);
 		.print("Payed fee for owning the company ",Company);
 	}.
-	
+
 /*Auction phase*/
 
 +state(auction):canAuction <-
