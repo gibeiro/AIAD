@@ -32,7 +32,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;*/
 
 
-//import java.util.logging.*;
+import java.util.logging.*;
 
 
 
@@ -47,7 +47,7 @@ public class Interface extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Interface(Engine game) {
+	public Interface(Engine game, Logger logger) {
 		setBackground(Color.GRAY);
 		setForeground(Color.BLACK);
 		setTitle("Juguinhu ingarssadu");
@@ -107,7 +107,7 @@ public class Interface extends JFrame {
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			JLabel lblManager1 = new JLabel("Manager 1");
+			JLabel lblManager1 = new JLabel(game.managers.get(i).getName());
 			lblManager1.setFont(new Font("Tahoma", Font.BOLD, 18));
 			lblManager1.setHorizontalAlignment(SwingConstants.CENTER);
 			lblManager1.setBounds(12, 13, 204, 22);
@@ -137,14 +137,13 @@ public class Interface extends JFrame {
 			panel_companies.add(lblCompanies);
 			
 			//ciclo for
-			
-			JLabel lblCompanie_1 = new JLabel("New label");
-			lblCompanie_1.setBounds(12, 42, 56, 16);
-			panel_companies.add(lblCompanie_1);
-			
-			JLabel lblCompanie_2 = new JLabel("New label");
-			lblCompanie_2.setBounds(12, 71, 56, 16);
-			panel_companies.add(lblCompanie_2);
+			logger.info("size: " + Integer.toString(game.managers.get(i).getCompanies().size()));
+			for(int j=0;j<game.managers.get(i).getCompanies().size();j++) {
+				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
+				logger.info("name -> -> " + game.managers.get(i).getCompanies().get(j).getName() + "\n");
+				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				panel_companies.add(lblCompanie_1);
+			}
 		}
 		
 		for(int i = 0 ; i<game.investors.size() ; i++) {
@@ -153,7 +152,7 @@ public class Interface extends JFrame {
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			JLabel lblManager1 = new JLabel("Manager 1");
+			JLabel lblManager1 = new JLabel(game.investors.get(i).getName());
 			lblManager1.setFont(new Font("Tahoma", Font.BOLD, 18));
 			lblManager1.setHorizontalAlignment(SwingConstants.CENTER);
 			lblManager1.setBounds(12, 13, 204, 22);
@@ -201,10 +200,46 @@ public class Interface extends JFrame {
 		for(int i=0;i<game.managers.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(i);
 			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
+			
+			JPanel panel_companies = (JPanel)panel.getComponent(3);
+			panel_companies.removeAll();
+			
+			JLabel lblCompanies = new JLabel("Companies");
+			lblCompanies.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblCompanies.setHorizontalAlignment(SwingConstants.CENTER);
+			lblCompanies.setBounds(12, 13, 180, 16);
+			panel_companies.add(lblCompanies);
+			
+			for(int j=0;j<game.managers.get(i).getCompanies().size();j++) {
+				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
+				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				panel_companies.add(lblCompanie_1);
+			}
+			
+			panel_companies.revalidate();
+			panel_companies.repaint();
 		}
 		for(int i=0;i<game.investors.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(game.managers.size()+i);
 			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
+			
+			JPanel panel_companies = (JPanel)panel.getComponent(3);
+			panel_companies.removeAll();
+			
+			JLabel lblCompanies = new JLabel("Companies");
+			lblCompanies.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblCompanies.setHorizontalAlignment(SwingConstants.CENTER);
+			lblCompanies.setBounds(12, 13, 180, 16);
+			panel_companies.add(lblCompanies);
+			
+			for(int j=0;j<game.investors.get(i).getCompanies().size();j++) {
+				JLabel lblCompanie_1 = new JLabel(game.investors.get(i).getCompanies().get(j).getName());
+				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				panel_companies.add(lblCompanie_1);
+			}
+			
+			panel_companies.revalidate();
+			panel_companies.repaint();
 		}
 	}
 }

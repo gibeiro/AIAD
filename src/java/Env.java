@@ -60,10 +60,11 @@ public class Env extends Environment {
         	}
         	//Initiate game
         	else if(action.equals(ig)) {
-                gui = new Interface(game);
-                gui.setVisible(true);
         		game.init();
         		logger.info("Initiated game");
+        		gui = new Interface(game,logger);
+                gui.setVisible(true);
+                logger.info("Initiated interface");
         	}
         	//Next phase
         	else if(action.equals(np)) {
