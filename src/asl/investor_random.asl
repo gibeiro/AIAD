@@ -29,8 +29,8 @@ beggining.
 +selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation) <-
 	.random(N);
 	N1 = N*100;
-	//50% chance to offer a proposal to the manager
-	if(N1 < 50){
+	//Chance to offer a proposal to the manager
+	if(N1 < 25){
 		.random(N2);
 		Offer = N2 * 60000;
 		.send(Manager,tell,propose(Company,Offer,Phase));
@@ -41,7 +41,7 @@ beggining.
 +selling(Company,MinPrice,Phase)[source(Manager)] : not Phase = 1 & state(negotiation) <-
 	.random(N);
 	N1 = N*100;
-	//50% chance to offer a proposal to the manager
+	//Chance to offer a proposal to the manager
 	if(N1 < 50){
 		.random(N2);
 		Offer = MinPrice + N2 * 10000;
