@@ -45,6 +45,8 @@ beggining.
 	if(L == 1){
 		.max(List,b(V,W));
 		.print("Winner is ",W, " with an offer of ",V);
+		.my_name(Me);
+		acceptProposal(W,Me,Comp,V);
 	}
 	if(not L == 1){
 		.max(List,b(V,W));
