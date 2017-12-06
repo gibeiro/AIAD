@@ -32,7 +32,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;*/
 
 
-//import java.util.logging.*;
+import java.util.logging.*;
 
 
 
@@ -47,7 +47,7 @@ public class Interface extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Interface(Engine game) {
+	public Interface(Engine game, Logger logger) {
 		setBackground(Color.GRAY);
 		setForeground(Color.BLACK);
 		setTitle("Juguinhu ingarssadu");
@@ -93,8 +93,15 @@ public class Interface extends JFrame {
 		panel_1.add(lblNewLabel_2);
 		
 		JLabel label = new JLabel("New label");
+		label.setBackground(Color.RED);
 		label.setBounds(12, 71, 56, 16);
+		label.setOpaque(true);
 		panel_1.add(label);
+		
+		JLabel lblXxx = new JLabel("xxx \u20AC");
+		lblXxx.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblXxx.setBounds(136, 42, 56, 16);
+		panel_1.add(lblXxx);
 		
 		JLabel lblXxxxxx = new JLabel("XXXXXX \u20AC");
 		lblXxxxxx.setHorizontalAlignment(SwingConstants.CENTER);
@@ -107,7 +114,7 @@ public class Interface extends JFrame {
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			JLabel lblManager1 = new JLabel("Manager 1");
+			JLabel lblManager1 = new JLabel(game.managers.get(i).getName());
 			lblManager1.setFont(new Font("Tahoma", Font.BOLD, 18));
 			lblManager1.setHorizontalAlignment(SwingConstants.CENTER);
 			lblManager1.setBounds(12, 13, 204, 22);
@@ -137,14 +144,31 @@ public class Interface extends JFrame {
 			panel_companies.add(lblCompanies);
 			
 			//ciclo for
-			
-			JLabel lblCompanie_1 = new JLabel("New label");
-			lblCompanie_1.setBounds(12, 42, 56, 16);
-			panel_companies.add(lblCompanie_1);
-			
-			JLabel lblCompanie_2 = new JLabel("New label");
-			lblCompanie_2.setBounds(12, 71, 56, 16);
-			panel_companies.add(lblCompanie_2);
+			logger.info("size: " + Integer.toString(game.managers.get(i).getCompanies().size()));
+			for(int j=0;j<game.managers.get(i).getCompanies().size();j++) {
+				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
+				logger.info("name -> -> " + game.managers.get(i).getCompanies().get(j).getName() + "\n");
+				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				lblCompanie_1.setOpaque(true);
+				switch(game.managers.get(i).getCompanies().get(j).getColor().toString()) {
+				case "red":
+					lblCompanie_1.setBackground(Color.RED);
+					break;
+				case "yellow":
+					lblCompanie_1.setBackground(Color.YELLOW);
+					break;
+				case "green":
+					lblCompanie_1.setBackground(Color.GREEN);
+					break;
+				case "blue":
+					lblCompanie_1.setBackground(Color.BLUE);
+					break;
+				default:
+					lblCompanie_1.setOpaque(false);
+					break;
+				}
+				panel_companies.add(lblCompanie_1);
+			}
 		}
 		
 		for(int i = 0 ; i<game.investors.size() ; i++) {
@@ -153,7 +177,7 @@ public class Interface extends JFrame {
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			JLabel lblManager1 = new JLabel("Manager 1");
+			JLabel lblManager1 = new JLabel(game.investors.get(i).getName());
 			lblManager1.setFont(new Font("Tahoma", Font.BOLD, 18));
 			lblManager1.setHorizontalAlignment(SwingConstants.CENTER);
 			lblManager1.setBounds(12, 13, 204, 22);
@@ -200,11 +224,96 @@ public class Interface extends JFrame {
 	public void update(Engine game) {
 		for(int i=0;i<game.managers.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(i);
-			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
+			if(game.managers.get(i).isBankrupt()) {
+				((JLabel)panel.getComponent(2)).setText("BANKRUPT");
+			}else {
+				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
+			}
+			
+			JPanel panel_companies = (JPanel)panel.getComponent(3);
+			panel_companies.removeAll();
+			
+			JLabel lblCompanies = new JLabel("Companies");
+			lblCompanies.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblCompanies.setHorizontalAlignment(SwingConstants.CENTER);
+			lblCompanies.setBounds(12, 13, 180, 16);
+			panel_companies.add(lblCompanies);
+			
+			for(int j=0;j<game.managers.get(i).getCompanies().size();j++) {
+				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
+				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				lblCompanie_1.setOpaque(true);
+				switch(game.managers.get(i).getCompanies().get(j).getColor().toString()) {
+				case "red":
+					lblCompanie_1.setBackground(Color.RED);
+					break;
+				case "yellow":
+					lblCompanie_1.setBackground(Color.YELLOW);
+					break;
+				case "green":
+					lblCompanie_1.setBackground(Color.GREEN);
+					break;
+				case "blue":
+					lblCompanie_1.setBackground(Color.BLUE);
+					break;
+				default:
+					lblCompanie_1.setOpaque(false);
+					break;
+				}
+				panel_companies.add(lblCompanie_1);
+			}
+			
+			panel_companies.revalidate();
+			panel_companies.repaint();
 		}
 		for(int i=0;i<game.investors.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(game.managers.size()+i);
-			((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
+			if(game.investors.get(i).isBankrupt()) {
+				((JLabel)panel.getComponent(2)).setText("BANKRUPT");
+			}else {
+				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
+			}
+			
+			JPanel panel_companies = (JPanel)panel.getComponent(3);
+			panel_companies.removeAll();
+			
+			JLabel lblCompanies = new JLabel("Companies");
+			lblCompanies.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblCompanies.setHorizontalAlignment(SwingConstants.CENTER);
+			lblCompanies.setBounds(12, 13, 180, 16);
+			panel_companies.add(lblCompanies);
+			
+			for(int j=0;j<game.investors.get(i).getCompanies().size();j++) {
+				JLabel lblCompanie_1 = new JLabel(game.investors.get(i).getCompanies().get(j).getName());
+				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
+				lblCompanie_1.setOpaque(true);
+				switch(game.investors.get(i).getCompanies().get(j).getColor().toString()) {
+				case "red":
+					lblCompanie_1.setBackground(Color.RED);
+					break;
+				case "yellow":
+					lblCompanie_1.setBackground(Color.YELLOW);
+					break;
+				case "green":
+					lblCompanie_1.setBackground(Color.GREEN);
+					break;
+				case "blue":
+					lblCompanie_1.setBackground(Color.BLUE);
+					break;
+				default:
+					lblCompanie_1.setOpaque(false);
+					break;
+				}
+				panel_companies.add(lblCompanie_1);
+				
+				JLabel lblCost = new JLabel(Integer.toString(game.investors.get(i).getCompanies().get(j).getPrice()) + " \u20AC");
+				lblCost.setHorizontalAlignment(SwingConstants.RIGHT);
+				lblCost.setBounds(136, 42+29*j, 56, 16);
+				panel_companies.add(lblCost);
+			}
+			
+			panel_companies.revalidate();
+			panel_companies.repaint();
 		}
 	}
 }
