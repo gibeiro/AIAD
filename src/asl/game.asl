@@ -51,7 +51,7 @@ beggining.
 		?fluct(Color,Value);
 		Income = Value * Mult * 1000;
 		investorIncome(Investor,Income);
-		.wait(50);
+		.wait(.count(ready(env),1),100);
 		.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
 	}.
 	
@@ -89,6 +89,7 @@ beggining.
 	.print("Auctioning ", Color ," company ", Company, " with mult of" , Mult);
 	.findall(Name,player(manager,Name,_),LI);
 	.send(LI,tell,aucStart);
+	.wait(place_bid(_),2500);
 	.wait(500);
 	if(.count(place_bid(_),NN) & NN > 0){
 		.findall(offer(V,M),place_bid(V)[source(M)],Offers);
