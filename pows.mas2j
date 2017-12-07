@@ -6,7 +6,8 @@ MAS pows {
 
 	agents:
 		game;
-		investor_random # 4;
+		investor_random # 3;
+		investor_safe # 1;
 		manager_random # 4;
 
 	aslSourcePath:

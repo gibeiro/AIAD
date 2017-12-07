@@ -75,11 +75,6 @@ beggining.
 	//Nothing to do here
 	+canPayment.
 
-+noMoney(Company)[source(Investor)] <-
-	.print("I bankrupted ",Investor);
-	bankrupt(Investor)
-.
-
 /*Payment phase*/
 
 +state(payment):canPayment <-

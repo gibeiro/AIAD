@@ -28,7 +28,7 @@ beggining.
 	.send(game,tell,doneSelling(Me)).
 	
 +!doState : state(negotiation) <- 
-	.wait(10000);
+	.wait(13000);
 	.print("---Investors Phase---");
 	next(phase);
 	!doState.
@@ -36,7 +36,7 @@ beggining.
 +!doState : state(investors) <- 
 	//print fluctuations
 	!doFluct;
-	!doIncome;
+	!doIIncome;
 	.wait(500);
 	.print("---Managers Phase---");
 	next(phase);
@@ -45,15 +45,16 @@ beggining.
 +!doFluct : true <-
 	.print("Doing fluctuation...");
 	fluctuate(game);
-	.wait(.count(fluct(Color,_),4),1000);
-	for(fluct(Color,Val)){
+	.wait(.count(fluct(Color,_,_),4),1000);
+	for(fluct(Color,Val,_)){
 		.print(Color," companies fluctuation at ",Val);
 	}.
-	
-+!doIncome : true <-
+@ii[atomic]
++!doIIncome : true <-
 	for(invests(Investor,Company,_)){
+		.wait(.count(ready(env),1),100);
 		?company(Company,Color,Mult);
-		?fluct(Color,Value);
+		?fluct(Color,Value,_);
 		Income = Value * Mult * 1000;
 		investorIncome(Investor,Income);
 		.wait(.count(ready(env),1),100);
@@ -61,10 +62,27 @@ beggining.
 	}.
 	
 +!doState : state(managers) <- 
+	!doMIncome;
 	.wait(500);
 	.print("---Payment Phase---");
 	next(phase);
 	!doState.
+
+@mi[atomic]
++!doMIncome : true <-
+	for(player(investor,Me,_)){
+		for(invests(Me,Company,Price) & owns(Manager,Company)){
+			?player(investor,Me,Cash);
+		if(Cash >= Price){
+			.print(Me," paying ",Manager," ",Price," for investing on the company ",Company);
+			managerIncome(Manager,Me,Price);
+		}else{
+			bankrupt(Me);
+			.wait(.count(ready(env),1),100);
+		}
+	}		
+}
+.
 	
 +!doState : state(payment) <- 
 	.wait(500);

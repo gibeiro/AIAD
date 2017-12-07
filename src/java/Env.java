@@ -172,7 +172,7 @@ public class Env extends Environment {
     	}
     	//List of fluctuations
     	for(Company.Color c : Company.Color.values()){
-			Literal inv = Literal.parseLiteral("fluct(" + c.toString() + "," + game.VALUES[c.index()][game.pointers[c.index()]] + ")");
+			Literal inv = Literal.parseLiteral("fluct(" + c.toString() + "," + game.VALUES[c.index()][game.pointers[c.index()]] + "," + game.pointers[c.index()] + ")");
 			addPercept(inv);
 		}
     	//Auctioned company
@@ -181,6 +181,9 @@ public class Env extends Environment {
     		addPercept(auc);
     	}
     	addPercept(Literal.parseLiteral("ready(env)"));
+    	try {
+            Thread.sleep(15);
+        } catch (Exception e) {}
     }
 
     /** Called before the end of MAS execution */
