@@ -95,11 +95,10 @@ recommended(blue,Index,Ofr):-
 +!payManag : true <-
 	.my_name(Me);
 	//Se nao tiver dinheiro para pagar todas as empresas, vender suficientes até ser possível
-	while( player(_,Me,Cash) & .findall(Company,owns(Me,Company),List) & .length(List,NC) & Cash < NC * 10000){
-		.shuffle(List,List2);
-		.nth(0,List2,ToSell);
-		sellCompany(Me,ToSell);
-		.print("Sold company ",ToSell, " for 5000");
+	while( player(_,Me,Cash) & .findall(own(Val,Me,Company),owns(Me,Company) & company(Company,Color,_) & fluct(Color,Val,_),List) & .length(List,NC) & Cash < NC * 10000){
+		.min(List,own(Val,Me,Winner));
+		sellCompany(Me,Winner);
+		.print("Sold company ",Winner, " for 5000");
 		.wait(.count(ready(env),1),100)
 	}
 	for(owns(Me,Company)){
@@ -118,7 +117,9 @@ recommended(blue,Index,Ofr):-
 +aucStart[source(S)] : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & fluct(Color,_,Index) & recommended(Color,Index,TempVal) & (Color = blue | Color = green)<-
 	.random(Rand);
 	.count(owns(Me,_),Own);
-	Value = TempVal * Mult + 500*Rand - 400*Own;
-	.send(S,tell,place_bid(Value))
+	Value = TempVal * Mult + 500*Rand - 200*Own;
+	if(Value < Cash){
+		.send(S,tell,place_bid(Value))
+	}
 	.abolish(aucStart).
 	
