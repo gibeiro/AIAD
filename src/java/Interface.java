@@ -47,7 +47,7 @@ public class Interface extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Interface(Engine game, Logger logger) {
+	public Interface(Engine game) {
 		setBackground(Color.GRAY);
 		setForeground(Color.BLACK);
 		setTitle("Juguinhu ingarssadu");
@@ -144,10 +144,8 @@ public class Interface extends JFrame {
 			panel_companies.add(lblCompanies);
 			
 			//ciclo for
-			logger.info("size: " + Integer.toString(game.managers.get(i).getCompanies().size()));
 			for(int j=0;j<game.managers.get(i).getCompanies().size();j++) {
 				JLabel lblCompanie_1 = new JLabel(game.managers.get(i).getCompanies().get(j).getName());
-				logger.info("name -> -> " + game.managers.get(i).getCompanies().get(j).getName() + "\n");
 				lblCompanie_1.setBounds(12, 42+29*j, 56, 16);
 				lblCompanie_1.setOpaque(true);
 				switch(game.managers.get(i).getCompanies().get(j).getColor().toString()) {
@@ -224,9 +222,9 @@ public class Interface extends JFrame {
 	public void update(Engine game) {
 		for(int i=0;i<game.managers.size();i++) {
 			JPanel panel = (JPanel)this.getContentPane().getComponent(i);
-			if(game.managers.get(i).isBankrupt()) {
+			if(game.managers.get(i).isBankrupt()){
 				((JLabel)panel.getComponent(2)).setText("BANKRUPT");
-			}else {
+			}else{
 				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
 			}
 			
