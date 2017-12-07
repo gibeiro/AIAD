@@ -29,9 +29,9 @@ beggining.
 +selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation) <-
 	?company(Company,Color,Mult);
     ?fluct(Color,_,Index);
-	Offer = N2 * 20000+20000;
+    .random(N2);
+	Offer = N2 * 20000 + 20000;
 	.send(Manager,tell,propose(Company,Offer,Phase));
-
 	.abolish(selling(Company,MinPrice,_))
 .
 @s2[atomic]
