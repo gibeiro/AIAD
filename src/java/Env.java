@@ -7,6 +7,8 @@ import jason.environment.grid.Location;
 import java.awt.EventQueue;
 import java.util.logging.*;
 
+import javax.swing.SwingUtilities;
+
 import game.Company;
 import game.Company.Color;
 import game.Engine;
@@ -62,7 +64,7 @@ public class Env extends Environment {
         	else if(action.equals(ig)) {
         		game.init();
         		logger.info("Initiated game");
-        		gui = new Interface(game,logger);
+        		gui = new Interface(game);
                 gui.setVisible(true);
                 logger.info("Initiated interface");
         	}
@@ -121,7 +123,11 @@ public class Env extends Environment {
         updatePercepts();
         
         if(gui != null) {
-        	gui.update(game);
+        	SwingUtilities.invokeLater(new Runnable() {
+        		public void run() {
+        			gui.update(game);
+        		}
+        	});
         }
         return true; // the action was executed with success
     }
