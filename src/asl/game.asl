@@ -72,17 +72,20 @@ beggining.
 +!doMIncome : true <-
 	for(player(investor,Me,_)){
 		for(invests(Me,Company,Price) & owns(Manager,Company)){
-			?player(investor,Me,Cash);
-		if(Cash >= Price){
-			.print(Me," paying ",Manager," ",Price," for investing on the company ",Company);
-			managerIncome(Manager,Me,Price);
-		}else{
-			bankrupt(Me);
-			.wait(.count(ready(env),1),100);
-		}
+			!tryPay(Me,Price,Manager,Company);
 	}		
 }
 .
++!tryPay(Inv,Price,Manager,Company) : player(_,Inv,Cash) <-
+	if(Cash >= Price){
+		.print(Inv," paying ",Manager," ",Price," for investing on the company ",Company);
+		managerIncome(Manager,Inv,Price);
+	}else{
+		bankrupt(Inv);
+		.wait(.count(ready(env),1),100);
+	}.
+
++!tryPay(Inv,Price,Manager,Company) : not player(_,Inv,Cash).
 	
 +!doState : state(payment) <- 
 	.wait(500);

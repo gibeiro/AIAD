@@ -38,7 +38,7 @@ recommended(blue,Index,Ofr):-
     ?recommended(Color,Index,TempOff);
     .count(invests(Me,_,Color),N);
     .count(invests(Me,_,_),N2);
-    Offer = TempOff * Mult - 111*N - 33*N2;
+    Offer = TempOff * Mult;
     .send(Manager,tell,propose(Company,Offer,Phase));
 	.abolish(selling(Company,MinPrice,_))
 .
