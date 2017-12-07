@@ -70,11 +70,11 @@ beggining.
 +!payIncome : true <-
 	.my_name(Me);
 	for(invests(Me,Company,Price) & owns(Manager,Company)){
+		.wait(.count(ready(env),1),100);
 		?player(investor,Me,Cash);
 		if(Cash >= Price){
 			.print("Im paying ",Manager," ",Price," for investing on the company ",Company);
 			managerIncome(Manager,Me,Price);
-			.wait(.count(ready(env),1),100);
 		}else{
 			.send(Manager,tell,noMoney(Company))
 		}

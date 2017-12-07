@@ -114,4 +114,10 @@ beggining.
 	
 	
 +!doState : state(end) <- 
-	.print("---Game ended---").
+	.print("---Game ended---");
+	.findall(scoreM(C1,N1),player(manager,N1,C1),List1);
+	.findall(scoreI(C2,N2),player(investor,N2,C2),List2);
+	.max(List1,scoreM(C1,W1));
+	.max(List2,scoreI(C2,W2));
+	.print(W1," was the winning manager");
+	.print(W2," was the winning investor").
