@@ -27,9 +27,13 @@ beggining.
 //Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose which one(s) to take
 @s1[atomic]
 +selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation) <-
+	.random(N);
+	N1 = N*100;
     .random(N2);
-	Offer = N2 * 10000 + 25000;
-	.send(Manager,tell,propose(Company,Offer,Phase));
+    if(N1 < 70){
+		Offer = N2 * 10000 + 25000;
+		.send(Manager,tell,propose(Company,Offer,Phase));
+	}
 	.abolish(selling(Company,MinPrice,_))
 .
 @s2[atomic]
