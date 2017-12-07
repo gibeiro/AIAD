@@ -22,7 +22,6 @@ beggining.
 +state(negotiation):canNegotiation <-
 	+canAuction;
 	-canNegotiation;
-	.print("Im open for proposals!");
 	!startEA;
 	+canInvestors.
 
@@ -30,6 +29,7 @@ beggining.
 +!startEA : true <-
 	.findall(Name,player(investor,Name,_),LI);
 	.my_name(Me);
+	.print("I'm open for proposals!");
 	for(owns(Me,Comp)){
 		.send(LI,tell,selling(Comp,0,1));
 	}.
@@ -41,14 +41,14 @@ beggining.
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
 	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
 	.length(List,L);
-	.print(L);
 	if(L == 1){
 		.max(List,b(V,W));
-		.print("Winner is ",W, " with an offer of ",V);
+		.print("Winner of company ", Comp," is ",W, " with an offer of ",V);
 		.my_name(Me);
 		acceptProposal(W,Me,Comp,V);
 	}
 	if(not L == 1){
+		.print("I received ", L, " proposals for the company ", Comp, ", trying again");
 		.max(List,b(V,W));
 		//Price has to be bigger than previously biggest offer
 		Phase2 = Phase+1;
