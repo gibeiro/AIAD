@@ -62,7 +62,6 @@ beggining.
 
 +state(investors):canInvestors <-
 	.abolish(didPhase(_,_));
-	.abolish(endSale(_));
 	+canNegotiation;
 	-canInvestors;
 	//Nothing to do here
