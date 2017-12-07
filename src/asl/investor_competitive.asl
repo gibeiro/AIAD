@@ -31,11 +31,7 @@ recommended(blue,Index,Ofr):-
 
 //Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose which one(s) to take
 @s1[atomic]
-+selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation) <-
-	.my_name(Me);
-    ?company(Company,Color,Mult);
-    ?fluct(Color,_,Index);
-    ?recommended(Color,Index,TempOff);
++selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation)& .my_name(Me) & company(Company,Color,Mult) & fluct(Color,_,Index) & recommended(Color,Index,TempOff)<-
     .count(invests(Me,_,Color),N);
     .count(invests(Me,_,_),N2);
     Offer = TempOff * Mult;
@@ -43,11 +39,8 @@ recommended(blue,Index,Ofr):-
 	.abolish(selling(Company,MinPrice,_))
 .
 @s2[atomic]
-+selling(Company,MinPrice,Phase)[source(Manager)] : not Phase = 1 & state(negotiation) <-
++selling(Company,MinPrice,Phase)[source(Manager)] : not Phase = 1 &state(negotiation)& .my_name(Me) & company(Company,Color,Mult) & fluct(Color,_,Index) & recommended(Color,Index,TempOff)<-
 	.my_name(Me);
-    ?company(Company,Color,Mult);
-    ?fluct(Color,_,Index);
-    ?recommended(Color,Index,TempOff);
     .random(Rand);
     .findall(a,invests(Investor,C,Col) & not Investor = Me & not Color = Col,L1);
     .length(L1,N1);

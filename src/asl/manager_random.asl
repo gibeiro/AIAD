@@ -106,12 +106,11 @@ beggining.
 	//Code
 	+canNegotiation.
 	
-+aucStart[source(S)] <-
-	?auction(Company,Color,Mult);
-	.my_name(Me);
-	?player(_,Me,Cash);
++aucStart[source(S)] : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash)<-
 	.random(Rand);
-	Value = (Cash*Rand)/4;
-	.send(S,tell,place_bid(Value))
+	Value = Rand*20000+20000;
+	if(Value < Cash){
+		.send(S,tell,place_bid(Value))
+	}
 	.abolish(aucStart).
 	

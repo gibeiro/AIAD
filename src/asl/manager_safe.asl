@@ -4,6 +4,15 @@
 
 beggining.
 
+recommended(red,Index,Ofr):-
+	Ofr = 30000 + (Index-3)*8000.
+recommended(yellow,Index,Ofr):-
+	Ofr = 30000 + (Index-3)*6000.
+recommended(green,Index,Ofr):-
+	Ofr = 30000 + (Index-3)*5000.
+recommended(blue,Index,Ofr):-
+	Ofr = 30000 + (Index-3)*1500.
+
 /* Initial goals */
 
 // join the game
@@ -106,12 +115,10 @@ beggining.
 	//Code
 	+canNegotiation.
 	
-+aucStart[source(S)] <-
-	?auction(Company,Color,Mult);
-	.my_name(Me);
-	?player(_,Me,Cash);
++aucStart[source(S)] : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & fluct(Color,_,Index) & recommended(Color,Index,TempVal) & (Color = blue | Color = green)<-
 	.random(Rand);
-	Value = (Cash*Rand)/4;
+	.count(owns(Me,_),Own);
+	Value = TempVal * Mult + 500*Rand - 400*Own;
 	.send(S,tell,place_bid(Value))
 	.abolish(aucStart).
 	
