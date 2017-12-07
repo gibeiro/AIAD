@@ -73,30 +73,14 @@ beggining.
 +state(managers):canManagers <-
 	+canInvestors;
 	-canManagers;
-	!collectIncome;
-	!bankruptInvestors;
+	//Nothing to do here
 	+canPayment.
-	
-+!collectIncome : true <-
-	.my_name(Me);
-	for(owns(Me,Company) & invests(Investor,Company,Price)){
-		?player(investor,Investor,Cash);
-		if(Cash >= Price){
-			.print("Investor ",Investor," payed me ",Price);
-			managerIncome(Me,Investor,Price);
-			.wait(.count(ready(env),1),100);
-		}else{
-			+bankrupt(Investor);
-		}
-	}.
 
-+!bankruptInvestors : true <-
-	for(bankrupt(Investor)){
-		.print("Investor ",Investor," went bankrupt");
-		bankrupt(Investor);
-	}
-	.abolish(bankrupt(_))
++noMoney(Company)[source(Investor)] <-
+	.print("I bankrupted ",Investor);
+	bankrupt(Investor)
 .
+
 /*Payment phase*/
 
 +state(payment):canPayment <-

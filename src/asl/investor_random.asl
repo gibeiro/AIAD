@@ -17,7 +17,7 @@ beggining.
 
 +!join : true <- join(game);+canNegotiation.
 
-//Negotiation phase
+/*Negotiation phase*/
 
 +state(negotiation):canNegotiation <-
 	+canAuction;
@@ -32,7 +32,7 @@ beggining.
 	//Chance to offer a proposal to the manager
 	if(N1 < 25){
 		.random(N2);
-		Offer = N2 * 60000;
+		Offer = N2 * 30000;
 		.send(Manager,tell,propose(Company,Offer,Phase));
 	}
 	.abolish(selling(Company,MinPrice,_))
@@ -50,7 +50,7 @@ beggining.
 	.abolish(selling(Company,MinPrice,_))
 .
 	
-//Investors phase
+/*Investors phase*/
 	
 +state(investors):canInvestors <-
 	.abolish(selling(_,_));
@@ -64,9 +64,22 @@ beggining.
 +state(managers):canManagers <-
 	+canInvestors;
 	-canManagers;
-	//Nothing to be done here
+	!payIncome;
 	+canPayment.
 	
++!payIncome : true <-
+	.my_name(Me);
+	for(invests(Me,Company,Price) & owns(Manager,Company)){
+		?player(investor,Me,Cash);
+		if(Cash >= Price){
+			.print("Im paying ",Manager," ",Price," for investing on the company ",Company);
+			managerIncome(Manager,Me,Price);
+			.wait(.count(ready(env),1),100);
+		}else{
+			.send(Manager,tell,noMoney(Company))
+		}
+	}.
+
 /*Payment phase*/
 
 +state(payment):canPayment <-
