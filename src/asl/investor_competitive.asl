@@ -47,10 +47,13 @@ recommended(blue,Index,Ofr):-
 	.my_name(Me);
     ?company(Company,Color,Mult);
     ?fluct(Color,_,Index);
-    .count(invests(Me,_,Color),N);
-    .count(invests(Me,_,_),N2);
     ?recommended(Color,Index,TempOff);
-    Offer = (TempOff * Mult - 111*N - 33* N2) +(200 * Phase);
+    .random(Rand);
+    .findall(a,invests(Investor,C,Col) & not Investor = Me & not Color = Col,L1);
+    .length(L1,N1);
+    //Rand serve para nao competir infinitamente 
+    Offer = (TempOff * Mult) + (Rand * 400 * Phase) + (N1*400);
+    .print(Offer, " ", MinPrice);
     if(Offer > MinPrice){
     	.send(Manager,tell,propose(Company,Offer,Phase));
     }
