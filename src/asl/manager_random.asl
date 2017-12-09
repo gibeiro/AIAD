@@ -45,7 +45,7 @@ beggining.
 	.abolish(propose(Comp,_,Phase));
 .
 	
-+!handlePropose(Comp,Phase) <-
++!handlePropose(Comp,Phase) : state(negotiation) <-
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
 	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
 	.length(List,L);
@@ -61,6 +61,7 @@ beggining.
 		//Price has to be bigger than previously biggest offer
 		.send(ListBuyers,tell,selling(Comp,V,Phase+1));
 	}.
++!handlePropose(Comp,Phase) : not state(negotiation).
 
 /*Investors phase*/
 
@@ -86,15 +87,16 @@ beggining.
 	!payManag;
 	+canAuction.
 
-+!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash < NC * 10000 <-
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,_),NC) & Cash < NC * 10000 <-
+	.findall(Company,owns(Me,Company),List);
 	.shuffle(List,List2);
 	.nth(0,List2,ToSell);
 	sellCompany(Me,ToSell);
 	.print("Sold company ",ToSell, " for 5000");
-	.wait(.count(ready(env),1),100);
+	.wait(20);
 	!payManag
 .
-+!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash > NC * 10000 <-
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash >= NC * 10000 <-
 	for(owns(Me,Company)){
 		payFee(Me,10000);
 		.print("Payed fee for owning the company ",Company);
@@ -117,9 +119,9 @@ beggining.
 	N2 = N*100;
 	if(N < 60){
 		.random(Rand);
-		Value = Rand*20000+20000;
+		Value = (Rand*20000+20000)*Mult;
 		if(Value < Cash){
-			.send(Game,tell,place_bid(Value))
+			.broadcast(tell,place_bid(Value))
 		}
 	}
 .

@@ -9,7 +9,9 @@ MAS pows {
 		investor_agressive # 1;
 		investor_safe # 1;
 		investor_random # 2;
-		manager_random # 4;
+		manager_random # 2;
+		manager_safe # 1;
+		manager_agressive # 1;
 
 	aslSourcePath:
 		"src/asl";
