@@ -88,6 +88,7 @@ beggining.
 	+canAuction.
 
 +!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,_),NC) & Cash < NC * 10000 <-
+	.findall(Company,owns(Me,Company),List);
 	.shuffle(List,List2);
 	.nth(0,List2,ToSell);
 	sellCompany(Me,ToSell);
