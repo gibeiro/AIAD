@@ -1,4 +1,4 @@
-// Agent manager_random in project pows
+// Agent manager_agressive in project pows
 
 /* Initial beliefs and rules */
 
@@ -87,9 +87,11 @@ risky(Color) :-
 	.length(List,L);
 	if(L == 1){
 		.max(List,b(V,W));
-		.print("Winner of company ", Comp," is ",W, " with an offer of ",V);
-		.my_name(Me);
-		acceptProposal(W,Me,Comp,V);
+		if(V > 10000){
+			.print("Winner of company ", Comp," is ",W, " with an offer of ",V);
+			.my_name(Me);
+			acceptProposal(W,Me,Comp,V);
+		}
 	}
 	if(not L == 1){
 		.print("I received ", L, " proposals for the company ", Comp, ", trying again");
@@ -123,15 +125,15 @@ risky(Color) :-
 	!payManag;
 	+canAuction.
 
-+!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash < NC * 10000 <-
-	.shuffle(List,List2);
-	.nth(0,List2,ToSell);
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,_),NC) & Cash < NC * 10000 <-
+	.findall([Index,Company],owns(Me,Company) & company(Company,Color,_) & fluct(Color,_,Index),L);
+	.min(L,[Index,ToSell]);
 	sellCompany(Me,ToSell);
 	.print("Sold company ",ToSell, " for 5000");
-	.wait(.count(ready(env),1),100);
-	!payManag
+	.wait(20);
+	!payManag;
 .
-+!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash > NC * 10000 <-
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash >= NC * 10000 <-
 	for(owns(Me,Company)){
 		payFee(Me,10000);
 		.print("Payed fee for owning the company ",Company);
