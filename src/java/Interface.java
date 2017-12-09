@@ -50,7 +50,7 @@ public class Interface extends JFrame {
 	public Interface(Engine game) {
 		setBackground(Color.GRAY);
 		setForeground(Color.BLACK);
-		setTitle("Juguinhu ingarssadu");
+		setTitle("AIAD Panic on Wall Street");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 900);
 		contentPane = new JPanel();
