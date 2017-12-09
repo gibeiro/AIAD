@@ -4,15 +4,18 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import java.awt.Window.Type;
 import javax.swing.JSplitPane;
+import javax.swing.JViewport;
 import javax.swing.JSeparator;
 import javax.swing.JList;
 import java.awt.FlowLayout;
@@ -78,8 +81,8 @@ public class Interface extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.LIGHT_GRAY);
-		panel_1.setBounds(12, 90, 204, 297);
-		panels.add(panel_1);
+		panel_1.setBounds(12, 90, 204, 500);
+		//panels.add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel_1 = new JLabel("Companies");
@@ -133,9 +136,13 @@ public class Interface extends JFrame {
 			
 			JPanel panel_companies = new JPanel();
 			panel_companies.setBackground(Color.LIGHT_GRAY);
-			panel_companies.setBounds(12, 90, 204, 297);
-			panel.add(panel_companies);
+			panel_companies.setPreferredSize(new Dimension(204,297));
+			//panel.add(panel_companies);
 			panel_companies.setLayout(null);
+			
+			JScrollPane scroll = new JScrollPane(panel_companies);
+			scroll.setBounds(10, 90, 208, 297);
+			panel.add(scroll);
 			
 			JLabel lblCompanies = new JLabel("Companies");
 			lblCompanies.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -194,9 +201,13 @@ public class Interface extends JFrame {
 			
 			JPanel panel_companies = new JPanel();
 			panel_companies.setBackground(Color.LIGHT_GRAY);
-			panel_companies.setBounds(12, 90, 204, 297);
-			panel.add(panel_companies);
+			panel_companies.setPreferredSize(new Dimension(204,297));
+			//panel.add(panel_companies);
 			panel_companies.setLayout(null);
+			
+			JScrollPane scroll = new JScrollPane(panel_companies);
+			scroll.setBounds(10, 90, 208, 297);
+			panel.add(scroll);
 			
 			JLabel lblCompanies = new JLabel("Companies");
 			lblCompanies.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -228,7 +239,8 @@ public class Interface extends JFrame {
 				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.managers.get(i).getCash()) + " €");
 			}
 			
-			JPanel panel_companies = (JPanel)panel.getComponent(3);
+			JPanel panel_companies = (JPanel)((JViewport)((JScrollPane)panel.getComponent(3)).getComponent(0)).getView();
+			panel_companies.setPreferredSize(new Dimension(204,42+29*game.managers.get(i).getCompanies().size()));
 			panel_companies.removeAll();
 			
 			JLabel lblCompanies = new JLabel("Companies");
@@ -272,7 +284,8 @@ public class Interface extends JFrame {
 				((JLabel)panel.getComponent(2)).setText(Integer.toString(game.investors.get(i).getCash()) + " €");
 			}
 			
-			JPanel panel_companies = (JPanel)panel.getComponent(3);
+			JPanel panel_companies = (JPanel)((JViewport)((JScrollPane)panel.getComponent(3)).getComponent(0)).getView();
+			panel_companies.setPreferredSize(new Dimension(204,42+29*game.managers.get(i).getCompanies().size()));
 			panel_companies.removeAll();
 			
 			JLabel lblCompanies = new JLabel("Companies");
