@@ -12,6 +12,10 @@ maxshift(red,7).
 maxshift(yellow,3).
 maxshift(green,2).
 maxshift(blue,1).
+color(blue).
+color(red).
+color(yellow).
+color(green).
 
 maxProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind + Shift & .min([NInd,7],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
@@ -41,6 +45,13 @@ safe(Color) :-
 	
 risky(Color) :-
 	Color = yellow | Color = red.
+
+popular(Color) :-
+	.findall([N,Col],color(Col) & .count(invests(_,Col,_),N),L) &
+	.sort(L,L2) & 
+	.nth(2,L2,[N1,_]) & 
+	.nth(3,L2,[N2,_]) &
+	.count(invests(_,Color,_),N3) & (N1 = N3 | N2 = N3).
 
 /* Initial goals */
 
@@ -144,6 +155,8 @@ risky(Color) :-
 /*Auction phase*/
 
 +state(auction):canAuction <-
+	.abolish(bought(_));
+	+bought(0);
 	+canPayment;
 	-canAuction;
 	//Code
@@ -153,15 +166,20 @@ risky(Color) :-
 	!handleAuc(S);
 	.abolish(aucStart).
 	
-+!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) <-
-	.random(N);
-	N2 = N*100;
-	if(N < 60){
-		.random(Rand);
-		Value = Rand*20000+20000;
-		if(Value < Cash){
-			.broadcast(tell,place_bid(Value))
-		}
-	}
-.
++youWon : bought(N) <-
+	-+bought(N+1);
+	-youWon.
+
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & bought(N) & N >1.
+//tenta comprar se for das 2 cores mais populares na fase anterior
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & popular(Color)  <-
+	?avgProfit(Color,Avg);
+	?maxProfit(Color,Max);
+	.random(Rand);
+	Value = Mult * ((Avg + Max)/2 + Rand * 10000);
+	if(Value < Cash & Value < Max){
+		.broadcast(tell,place_bid(Value))
+	}.
++!handleAuc(Game).
+
 	

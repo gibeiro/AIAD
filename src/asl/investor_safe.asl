@@ -110,7 +110,7 @@ risky(Color) :-
 	?avgProfit(Color,Avg);
 	.random(N);
 	Offer = (MinPrice + N * 6000)*Mult;
-	if(Offer < (Avg+2000) * Mult){
+	if(Offer < (Avg+10000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .

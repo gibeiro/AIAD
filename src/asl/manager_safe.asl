@@ -188,5 +188,6 @@ risky(Color) :-
 //Nao compra se ja comprou 2 e é o mais rico
 +!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & richest(Me) & bought(N) & N >= 1.
 
++!handleAuc(Game).
 
 	
