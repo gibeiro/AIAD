@@ -20,6 +20,8 @@ beggining.
 
 //React to state change to negotiation
 +state(negotiation):canNegotiation <-
+	.abolish(didPhase(_,_));
+	.abolish(propose(_,_,_));
 	+canAuction;
 	-canNegotiation;
 	!startEA;
@@ -33,11 +35,17 @@ beggining.
 	for(owns(Me,Comp)){
 		.send(LI,tell,selling(Comp,0,1));
 	}.
-
+	
 @pb1[atomic]
 +propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) & .my_name(Me) & owns(Me,Comp) <-
+	+didPhase(Comp,Phase);
 	//wait for all proposals
 	.wait(200);
+	!handlePropose(Comp,Phase);
+	.abolish(propose(Comp,_,Phase));
+.
+	
++!handlePropose(Comp,Phase) <-
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
 	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
 	.length(List,L);
@@ -51,17 +59,12 @@ beggining.
 		.print("I received ", L, " proposals for the company ", Comp, ", trying again");
 		.max(List,b(V,W));
 		//Price has to be bigger than previously biggest offer
-		Phase2 = Phase+1;
-		.send(ListBuyers,tell,selling(Comp,V,Phase2));
-	}
-	.abolish(propose(Comp,_,Phase));
-	+didPhase(Comp,Phase);
-.
+		.send(ListBuyers,tell,selling(Comp,V,Phase+1));
+	}.
 
 /*Investors phase*/
 
 +state(investors):canInvestors <-
-	.abolish(didPhase(_,_));
 	+canNegotiation;
 	-canInvestors;
 	//Nothing to do here
@@ -83,21 +86,20 @@ beggining.
 	!payManag;
 	+canAuction.
 
-+!payManag : true <-
-	.my_name(Me);
-	//Se nao tiver dinheiro para pagar todas as empresas, vender suficientes até ser possível
-	while( player(_,Me,Cash) & .findall(Company,owns(Me,Company),List) & .length(List,NC) & Cash < NC * 10000){
-		.shuffle(List,List2);
-		.nth(0,List2,ToSell);
-		sellCompany(Me,ToSell);
-		.print("Sold company ",ToSell, " for 5000");
-		.wait(.count(ready(env),1),100)
-	}
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash < NC * 10000 <-
+	.shuffle(List,List2);
+	.nth(0,List2,ToSell);
+	sellCompany(Me,ToSell);
+	.print("Sold company ",ToSell, " for 5000");
+	.wait(.count(ready(env),1),100);
+	!payManag
+.
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash > NC * 10000 <-
 	for(owns(Me,Company)){
 		payFee(Me,10000);
 		.print("Payed fee for owning the company ",Company);
-	}.
-
+	}
+.
 /*Auction phase*/
 
 +state(auction):canAuction <-
@@ -105,12 +107,20 @@ beggining.
 	-canAuction;
 	//Code
 	+canNegotiation.
-	
-+aucStart[source(S)] : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash)<-
-	.random(Rand);
-	Value = Rand*20000+20000;
-	if(Value < Cash){
-		.send(S,tell,place_bid(Value))
-	}
+
++aucStart[source(S)] <-
+	!handleAuc(S);
 	.abolish(aucStart).
+	
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) <-
+	.random(N);
+	N2 = N*100;
+	if(N < 60){
+		.random(Rand);
+		Value = Rand*20000+20000;
+		if(Value < Cash){
+			.send(Game,tell,place_bid(Value))
+		}
+	}
+.
 	

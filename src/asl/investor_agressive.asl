@@ -74,7 +74,7 @@ risky(Color) :-
 	.abolish(selling(Company,MinPrice,_)).
 
 //Se o profit maximo for menor do que MinPrice, nao fazer nada
-+!handleSelling(Manager,Company,MinPrice,Phase) : company(Company,Color,Mult) & maxProfit(Color,Val) & MinPrice > Val * Mult.
++!handleSelling(Manager,Company,MinPrice,Phase) : company(Company,Color,Mult) & maxProfit(Color,Val) & (MinPrice+1000) > Val * Mult.
 
 //Se for o ultimo jogador, nao fazer nada
 +!handleSelling(Manager,Company,MinPrice,Phase) : last.
@@ -105,7 +105,7 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & safe(Color) &  propose(Company,_,Phase-1)[source(Player)] & poorest(Player) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 1600)*Mult;
+	Offer = (MinPrice + N * 2000)*Mult;
 	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
@@ -115,8 +115,8 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & goodValue(Color) &  propose(Company,_,Phase-1)[source(Player)] & not richest(Player) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 2000)*Mult;
-	if(Offer < (Max+1000) * Mult){
+	Offer = (MinPrice + N * 3000)*Mult;
+	if(Offer < (Max+2000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .
