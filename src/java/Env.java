@@ -93,7 +93,7 @@ public class Env extends Environment {
         	}
         	//Bankrupt investor
         	else if(action.getFunctor().equals(bnk)) {
-        		game.bankruptInvestor(action.getTerm(0).toString());
+        		game.bankrupt(action.getTerm(0).toString());
         	}
         	//Sell company
         	else if(action.getFunctor().equals(sec)) {

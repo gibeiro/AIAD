@@ -316,17 +316,22 @@ public class Engine {
 		investor.transfer(manager, ammount);
 	}
 	//Bankrupt investor
-	public  void bankruptInvestor(String idi) {
-		Player investor = null;
+	public  void bankrupt(String id) {
+		Player player = null;
 		for(Player p : investors) {
-			if(p.getName().equals(idi)) {
-				investor = p;
+			if(p.getName().equals(id)) {
+				player = p;
 			}
 		}
-		if(investor == null) {
+		for(Player p : managers) {
+			if(p.getName().equals(id)) {
+				player = p;
+			}
+		}
+		if(player == null) {
 			return;
 		}
-		investor.setBankrupt(true);
+		player.setBankrupt(true);
 	}
 	//----Payment phase methods----
 	
