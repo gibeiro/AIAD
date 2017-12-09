@@ -4,14 +4,41 @@
 
 beggining.
 
-recommended(red,Index,Ofr):-
-	Ofr = 30000 + (Index-3)*8000.
-recommended(yellow,Index,Ofr):-
-	Ofr = 30000 + (Index-3)*6000.
-recommended(green,Index,Ofr):-
-	Ofr = 30000 + (Index-3)*5000.
-recommended(blue,Index,Ofr):-
-	Ofr = 30000 + (Index-3)*1500.
+vals(red,[-20000,-10000,0,30000,40000,50000,60000,70000]).
+vals(yellow,[-10000,0,0,30000,40000,40000,60000,60000]).
+vals(green,[0,10000,20000,30000,30000,40000,50000,60000]).
+vals(blue,[20000,20000,20000,30000,30000,30000,40000,40000]).
+maxshift(red,7).
+maxshift(yellow,3).
+maxshift(green,2).
+maxshift(blue,1).
+
+maxProfit(Color,Val):-
+	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind + Shift & .min([NInd,7],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
+	
+minProfit(Color,Val):-
+	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind - Shift & .max([NInd,0],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
+	
+avgProfit(Color,Val):-
+	maxProfit(Color,Max) & minProfit(Color,Min) & Val = (Max + Min) / 2.
+	
+richest(Player) :- 
+	.findall([V,I],player(manager,I,V),L) & .max(L,[V,I]) & I = Player & not(player(manager,A,V) & not(A = Player)).
+	
+poorest(Player) :- 
+	.findall([V,I],player(manager,I,V),L) & .min(L,[V,I]) & I = Player & not(player(manager,A,V) & not(A = Player)).
+	
+goodValue(Color) :-
+	fluct(Color,_,Index) & Index > 2.
+
+badValue(Color) :-
+	fluct(Color,_,Index) & Index < 3.
+
+safe(Color) :-
+	Color = blue | Color = green.
+	
+risky(Color) :-
+	Color = yellow | Color = red.
 
 /* Initial goals */
 
@@ -22,13 +49,15 @@ recommended(blue,Index,Ofr):-
 
 +!join : beggining <- 
 	-beggining;
-	join(game);
+	join(manager);
 	+canNegotiation.
 
 /*Negotiation phase*/
 
 //React to state change to negotiation
 +state(negotiation):canNegotiation <-
+	.abolish(didPhase(_,_));
+	.abolish(propose(_,_,_));
 	+canAuction;
 	-canNegotiation;
 	!startEA;
@@ -42,11 +71,17 @@ recommended(blue,Index,Ofr):-
 	for(owns(Me,Comp)){
 		.send(LI,tell,selling(Comp,0,1));
 	}.
-
+	
 @pb1[atomic]
-+propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) <-
++propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) & .my_name(Me) & owns(Me,Comp) <-
+	+didPhase(Comp,Phase);
 	//wait for all proposals
-	.wait(500);
+	.wait(200);
+	!handlePropose(Comp,Phase);
+	.abolish(propose(Comp,_,Phase));
+.
+	
++!handlePropose(Comp,Phase) : state(negotiation) <-
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
 	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
 	.length(List,L);
@@ -60,17 +95,13 @@ recommended(blue,Index,Ofr):-
 		.print("I received ", L, " proposals for the company ", Comp, ", trying again");
 		.max(List,b(V,W));
 		//Price has to be bigger than previously biggest offer
-		Phase2 = Phase+1;
-		.send(ListBuyers,tell,selling(Comp,V,Phase2));
-	}
-	.abolish(propose(Comp,_,Phase));
-	+didPhase(Comp,Phase);
-.
+		.send(ListBuyers,tell,selling(Comp,V,Phase+1));
+	}.
++!handlePropose(Comp,Phase) : not state(negotiation).
 
 /*Investors phase*/
 
 +state(investors):canInvestors <-
-	.abolish(didPhase(_,_));
 	+canNegotiation;
 	-canInvestors;
 	//Nothing to do here
@@ -92,20 +123,20 @@ recommended(blue,Index,Ofr):-
 	!payManag;
 	+canAuction.
 
-+!payManag : true <-
-	.my_name(Me);
-	//Se nao tiver dinheiro para pagar todas as empresas, vender suficientes até ser possível
-	while( player(_,Me,Cash) & .findall(own(Val,Me,Company),owns(Me,Company) & company(Company,Color,_) & fluct(Color,Val,_),List) & .length(List,NC) & Cash < NC * 10000){
-		.min(List,own(Val,Me,Winner));
-		sellCompany(Me,Winner);
-		.print("Sold company ",Winner, " for 5000");
-		.wait(.count(ready(env),1),100)
-	}
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash < NC * 10000 <-
+	.shuffle(List,List2);
+	.nth(0,List2,ToSell);
+	sellCompany(Me,ToSell);
+	.print("Sold company ",ToSell, " for 5000");
+	.wait(.count(ready(env),1),100);
+	!payManag
+.
++!payManag :.my_name(Me) & player(_,Me,Cash) & .count(owns(Me,Company),NC) & Cash > NC * 10000 <-
 	for(owns(Me,Company)){
 		payFee(Me,10000);
 		.print("Payed fee for owning the company ",Company);
-	}.
-
+	}
+.
 /*Auction phase*/
 
 +state(auction):canAuction <-
@@ -113,13 +144,20 @@ recommended(blue,Index,Ofr):-
 	-canAuction;
 	//Code
 	+canNegotiation.
-	
-+aucStart[source(S)] : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & fluct(Color,_,Index) & recommended(Color,Index,TempVal) & (Color = blue | Color = green)<-
-	.random(Rand);
-	.count(owns(Me,_),Own);
-	Value = TempVal * Mult + 500*Rand - 200*Own;
-	if(Value < Cash){
-		.send(S,tell,place_bid(Value))
-	}
+
++aucStart[source(S)] <-
+	!handleAuc(S);
 	.abolish(aucStart).
+	
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) <-
+	.random(N);
+	N2 = N*100;
+	if(N < 60){
+		.random(Rand);
+		Value = Rand*20000+20000;
+		if(Value < Cash){
+			.broadcast(tell,place_bid(Value))
+		}
+	}
+.
 	

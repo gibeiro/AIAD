@@ -45,7 +45,7 @@ beggining.
 	.abolish(propose(Comp,_,Phase));
 .
 	
-+!handlePropose(Comp,Phase) <-
++!handlePropose(Comp,Phase) : state(negotiation) <-
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
 	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
 	.length(List,L);
@@ -61,6 +61,7 @@ beggining.
 		//Price has to be bigger than previously biggest offer
 		.send(ListBuyers,tell,selling(Comp,V,Phase+1));
 	}.
++!handlePropose(Comp,Phase) : not state(negotiation).
 
 /*Investors phase*/
 
@@ -119,7 +120,7 @@ beggining.
 		.random(Rand);
 		Value = Rand*20000+20000;
 		if(Value < Cash){
-			.send(Game,tell,place_bid(Value))
+			.broadcast(tell,place_bid(Value))
 		}
 	}
 .

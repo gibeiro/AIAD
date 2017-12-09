@@ -114,8 +114,7 @@ beggining.
 //Do an auction of a company
 +!doAuction : auction(Company,Color,Mult) <-
 	.print("Auctioning ", Color ," company ", Company, " with mult of" , Mult);
-	.findall(Name,player(manager,Name,_),LI);
-	.send(LI,tell,aucStart);
+	.broadcast(tell,aucStart);
 	.wait(place_bid(_),2500);
 	.wait(200);
 	if(.count(place_bid(_),NN) & NN > 0){
