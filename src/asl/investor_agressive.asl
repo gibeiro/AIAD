@@ -15,13 +15,15 @@ maxshift(blue,1).
 
 maxProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind + Shift & .min([NInd,7],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
-	
+maxProfit(Color,40000).
 minProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind - Shift & .max([NInd,0],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
+minProfit(Color,20000).
 	
 avgProfit(Color,Val):-
 	maxProfit(Color,Max) & minProfit(Color,Min) & Val = (Max + Min) / 2.
-	
+avgProfit(Color,30000).
+
 richest(Player) :- 
 	.findall([V,I],player(investor,I,V),L) & .max(L,[V,I]) & I = Player & not(player(investor,A,V) & not(A = Player)).
 	
@@ -125,7 +127,7 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & safe(Color) <-
 	?avgProfit(Color,Avg);
 	.random(N);
-	Offer = (MinPrice + N * 800)*Mult;
+	Offer = (MinPrice + N * 7000)*Mult;
 	if(Offer < (Avg+3000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
@@ -135,7 +137,7 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & poorest(Me) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 1500) * Mult;
+	Offer = (MinPrice + N * 5000) * Mult;
 	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
@@ -145,7 +147,7 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & not richest(Me) & not (risky(Color) & badValue(Color)) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 1200) * Mult;
+	Offer = (MinPrice + N * 6000) * Mult;
 	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}

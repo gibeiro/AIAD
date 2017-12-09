@@ -15,12 +15,14 @@ maxshift(blue,1).
 
 maxProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind + Shift & .min([NInd,7],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
-	
+maxProfit(Color,40000).
 minProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind - Shift & .max([NInd,0],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
+minProfit(Color,20000).
 	
 avgProfit(Color,Val):-
 	maxProfit(Color,Max) & minProfit(Color,Min) & Val = (Max + Min) / 2.
+avgProfit(Color,30000).
 	
 richest(Player) :- 
 	.findall([V,I],player(investor,I,V),L) & .max(L,[V,I]) & I = Player & not(player(investor,A,V) & not(A = Player)).
@@ -92,14 +94,14 @@ risky(Color) :-
 //Se for a primeira ronda e for o mais rico, apostar numa cor segura com indices grandes
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & richest(Me) & safe(Color) & goodValue(Color)<-
 	?avgProfit(Color,Avg);
-	Offer = (Avg - 300) * Mult;
+	Offer = (Avg - 500) * Mult;
 	.broadcast(tell,propose(Company,Offer,Phase))
 .
 
 //Se for a primeira ronda e nem for o mais rico nem o mais pobre, apostar numa cor segura
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & not poorest(Me) & not richest(Me) & safe(Color)<-
 	?avgProfit(Color,Avg);
-	Offer = (Avg - 500)*Mult ;
+	Offer = (Avg)*Mult ;
 	.broadcast(tell,propose(Company,Offer,Phase))
 .
 
@@ -107,7 +109,7 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & safe(Color) & goodValue(Color) <-
 	?avgProfit(Color,Avg);
 	.random(N);
-	Offer = (MinPrice + N * 800)*Mult;
+	Offer = (MinPrice + N * 6000)*Mult;
 	if(Offer < (Avg+2000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
@@ -117,7 +119,7 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & poorest(Me) & not (risky(Color) & badValue(Color)) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 1200) * Mult;
+	Offer = (MinPrice + N * 3000) * Mult;
 	if(Offer < (Max-2000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
@@ -127,8 +129,8 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & not richest(Me) & safe(Color) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 1000) * Mult;
-	if(Offer < (Max-3000) * Mult){
+	Offer = (MinPrice + N * 4000) * Mult;
+	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .

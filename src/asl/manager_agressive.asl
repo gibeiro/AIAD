@@ -15,12 +15,14 @@ maxshift(blue,1).
 
 maxProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind + Shift & .min([NInd,7],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
-	
+maxProfit(Color,40000).
 minProfit(Color,Val):-
 	fluct(Color,_,Ind) & maxshift(Color,Shift) & NInd = Ind - Shift & .max([NInd,0],NNInd) & vals(Color,L) & .nth(NNInd,L,Val).
+minProfit(Color,20000).
 	
 avgProfit(Color,Val):-
 	maxProfit(Color,Max) & minProfit(Color,Min) & Val = (Max + Min) / 2.
+avgProfit(Color,30000).
 	
 richest(Player) :- 
 	.findall([V,I],player(manager,I,V),L) & .max(L,[V,I]) & I = Player & not(player(manager,A,V) & not(A = Player)).
