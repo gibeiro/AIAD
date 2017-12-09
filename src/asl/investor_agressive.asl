@@ -80,60 +80,73 @@ risky(Color) :-
 +!handleSelling(Manager,Company,MinPrice,Phase) : last.
 
 //Se já tiver mais de N empresas, nao investir mais
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & nInvests(Me,N) & N > 4.
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & nInvests(Me,N) & N > 6.
 
-//Se for a primeira ronda e for o mais pobre, apostar numa cor qualquer que nao seja arristaca e com mau indice
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & poorest(Me) & not (risky(Color) & badValue(Color)) <-
-	?maxProfit(Color,Max);
+//Se for a primeira ronda e for o mais pobre, apostar numa cor qualquer
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & poorest(Me) <-
 	?avgProfit(Color,Avg);
-	Offer = (Avg - 300) * Mult;
-	if(Offer < Max * Mult){
-		.broadcast(tell,propose(Company,Offer,Phase))
-	}.
+	Offer = (Avg) * Mult;
+	.broadcast(tell,propose(Company,Offer,Phase)).
 	
-//Se for a primeira ronda e for o mais rico, apostar numa cor segura com indices grandes
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & richest(Me) & safe(Color) & goodValue(Color)<-
+//Se for a primeira ronda e for o mais rico, apostar em todas empresas excepto arriscadas de baixo indice
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1  & richest(Me) & goodValue(Color) <-
 	?avgProfit(Color,Avg);
-	Offer = (Avg - 100) * Mult;
-	if(Offer < (Avg + 400) * Mult){
-		.broadcast(tell,propose(Company,Offer,Phase))
-	}.
+	Offer = (Avg + 1000) * Mult;
+	.broadcast(tell,propose(Company,Offer,Phase)).
 
-//Se for a primeira ronda e nem for o mais rico nem o mais pobre, apostar numa cor segura
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & not poorest(Me) & not richest(Me) & safe(Color)<-
-	?maxProfit(Color,Max);
+//Se for a primeira ronda e nem for o mais rico nem o mais pobre, apostar em qualquer excepto insegura e com mau indice
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & Phase = 1 & not poorest(Me) & not richest(Me) & not (risky(Color) & badValue(Color))<-
 	?avgProfit(Color,Avg);
-	Offer = (Avg - 200)*Mult ;
-	if(Offer < (Max-200) * Mult){
+	Offer = (Avg + 500)*Mult;
+	.broadcast(tell,propose(Company,Offer,Phase));
+.
+
+//Se nao for o mais pobre, tentar retirar as empresas seguras ao mais pobre
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & safe(Color) &  propose(Company,_,Phase-1)[source(Player)] & poorest(Player) <-
+	?maxProfit(Color,Max);
+	.random(N);
+	Offer = (MinPrice + N * 1600)*Mult;
+	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
-	}.
+	}
+.
+
+//Se for o mais rico, tentar retirar empresas de alto indice a todos os outros
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & goodValue(Color) &  propose(Company,_,Phase-1)[source(Player)] & not richest(Player) <-
+	?maxProfit(Color,Max);
+	.random(N);
+	Offer = (MinPrice + N * 2000)*Mult;
+	if(Offer < (Max+1000) * Mult){
+		.broadcast(tell,propose(Company,Offer,Phase))
+	}
+.
 
 //Se for o mais rico, apenas apostar em cores seguras com indices grandes
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & safe(Color) & goodValue(Color) <-
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & safe(Color) <-
 	?avgProfit(Color,Avg);
 	.random(N);
-	Offer = (MinPrice + N * 300)*Mult;
-	if(Offer < (Avg+400) * Mult){
+	Offer = (MinPrice + N * 800)*Mult;
+	if(Offer < (Avg+3000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .
 
-//Se for o mais pobre, apostar em qualquer cor excepto arriscadas com indices baixos
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & poorest(Me) & not (risky(Color) & badValue(Color)) <-
+//Se for o mais pobre, apostar em qualquer cor 
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & poorest(Me) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 100) * Mult;
-	if(Offer < Max * Mult){
+	Offer = (MinPrice + N * 1500) * Mult;
+	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .
 
-//Se nem for o mais rico nem o mais pobre, apostar em qualquer cor segura
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & not richest(Me) & safe(Color) <-
+//Se nem for o mais rico nem o mais pobre, apostar em qualquer cor nao arriscada
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & not richest(Me) & not (risky(Color) & badValue(Color)) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 200) * Mult;
-	if(Offer < (Max-200) * Mult){
+	Offer = (MinPrice + N * 1200) * Mult;
+	if(Offer < (Max-1000) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .
@@ -145,7 +158,7 @@ risky(Color) :-
 +state(investors):canInvestors <-
 	+canNegotiation;
 	-canInvestors;
-	//Nothing to be done here
+	//Nothing to do
 	+canManagers.
 	
 /*Managers phase*/
@@ -153,7 +166,7 @@ risky(Color) :-
 +state(managers):canManagers <-
 	+canInvestors;
 	-canManagers;
-	//Nothing
+	//Nothing to do
 	+canPayment.
 /*Payment phase*/
 

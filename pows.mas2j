@@ -6,7 +6,7 @@ MAS pows {
 
 	agents:
 		game;
-		investor_safe # 1;
+		investor_agressive # 1;
 		investor_random # 3;
 		manager_random # 4;
 

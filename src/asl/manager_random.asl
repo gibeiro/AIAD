@@ -37,7 +37,7 @@ beggining.
 @pb1[atomic]
 +propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) & .my_name(Me) & owns(Me,Comp) <-
 	//wait for all proposals
-	.wait(500);
+	.wait(200);
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);
 	.findall(A,propose(Comp,_,Phase)[source(A)],ListBuyers);
 	.length(List,L);

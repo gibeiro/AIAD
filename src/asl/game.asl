@@ -46,8 +46,8 @@ beggining.
 	.print("Doing fluctuation...");
 	fluctuate(game);
 	.wait(.count(fluct(Color,_,_),4),1000);
-	for(fluct(Color,Val,_)){
-		.print(Color," companies fluctuation at ",Val);
+	for(fluct(Color,Val,Index)){
+		.print(Color," companies fluctuation at ",Val,"(",Index,")");
 	}.
 @ii[atomic]
 +!doIIncome : true <-

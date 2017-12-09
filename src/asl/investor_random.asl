@@ -34,16 +34,14 @@ beggining.
 	.random(N);
 	N1 = N*100;
     .random(N2);
-    if(N1 < 70){
-		Offer = N2 * 20000 + 15000;
-		.broadcast(tell,propose(Company,Offer,Phase));
-	}
+	Offer = N2 * 20000 + 15000;
+	.broadcast(tell,propose(Company,Offer,Phase));
 .
 +!handleSelling(Manager,Company,MinPrice,Phase) : not Phase = 1 <-
 	.random(N);
 	N1 = N*100;
 	//Chance to offer a proposal to the manager
-	if(N1 < 60){
+	if(N1 < 50){
 		.random(N2);
 		Offer = MinPrice + N2 * 500;
 		.broadcast(tell,propose(Company,Offer,Phase));
@@ -54,7 +52,7 @@ beggining.
 +state(investors):canInvestors <-
 	+canNegotiation;
 	-canInvestors;
-	//Nothing to be done here
+	//Nothing to do
 	+canManagers.
 	
 /*Managers phase*/
@@ -62,7 +60,7 @@ beggining.
 +state(managers):canManagers <-
 	+canInvestors;
 	-canManagers;
-	//Nothing
+	//Nothing to do
 	+canPayment.
 /*Payment phase*/
 
