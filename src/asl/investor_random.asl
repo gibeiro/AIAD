@@ -1,12 +1,6 @@
-/* Useful logic */
-
-firstN(_,[],0).
-firstN([E1|R1],[E1|R2],N):-
-	N2 = N-1 & first3(R1,R2,N2).
-
 // Agent investor_random in project pows
 
-/* Initial goals */
+/* Initial beliefs */
 
 beggining.
 
@@ -15,44 +9,49 @@ beggining.
 
 /* Plans */
 
-+!join : true <- join(game);+canNegotiation.
++!join : beggining <- 
+	-beggining;
+	join(investor);
+	+canNegotiation.
 
 /*Negotiation phase*/
 
 +state(negotiation):canNegotiation <-
+	.abolish(selling(_,_));
+	.abolish(propose(_,_,_));
 	+canAuction;
 	-canNegotiation;
 	+canInvestors.
 
-//Indicator that its the first selling(_,_) it has received, so after receiving it, it shall wait 1s for all other sales, then choose which one(s) to take
-@s1[atomic]
-+selling(Company,_,Phase)[source(Manager)] : Phase = 1 & state(negotiation) <-
+//Reaction to the first selling(_,_) it has received
+
+@s[atomic]
++selling(Company,MinPrice,Phase)[source(Manager)] : state(negotiation)<-
+	!handleSelling(Manager,Company,MinPrice,Phase);
+	.abolish(selling(Company,MinPrice,_)).
+	
++!handleSelling(Manager,Company,MinPrice,Phase) : Phase = 1 <-
 	.random(N);
 	N1 = N*100;
     .random(N2);
     if(N1 < 70){
-		Offer = N2 * 10000 + 25000;
-		.send(Manager,tell,propose(Company,Offer,Phase));
+		Offer = N2 * 20000 + 15000;
+		.broadcast(tell,propose(Company,Offer,Phase));
 	}
-	.abolish(selling(Company,MinPrice,_))
 .
-@s2[atomic]
-+selling(Company,MinPrice,Phase)[source(Manager)] : not Phase = 1 & state(negotiation) <-
++!handleSelling(Manager,Company,MinPrice,Phase) : not Phase = 1 <-
 	.random(N);
 	N1 = N*100;
 	//Chance to offer a proposal to the manager
-	if(N1 < 50){
+	if(N1 < 60){
 		.random(N2);
 		Offer = MinPrice + N2 * 500;
-		.send(Manager,tell,propose(Company,Offer,Phase));
-	}
-	.abolish(selling(Company,MinPrice,_))
-.
+		.broadcast(tell,propose(Company,Offer,Phase));
+	}.
 	
 /*Investors phase*/
 	
 +state(investors):canInvestors <-
-	.abolish(selling(_,_));
 	+canNegotiation;
 	-canInvestors;
 	//Nothing to be done here
@@ -70,7 +69,7 @@ beggining.
 +state(payment):canPayment <-
 	+canManagers;
 	-canPayment;
-	//Code
+	//Nothing to do
 	+canAuction.
 	
 /*Auction phase*/
@@ -78,5 +77,5 @@ beggining.
 +state(auction):canAuction <-
 	+canPayment;
 	-canAuction;
-	//Code
+	//Nothing to do
 	+canNegotiation.

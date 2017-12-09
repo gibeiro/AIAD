@@ -1,4 +1,4 @@
-// Agent investor_safe in project pows
+// Agent investor_agressive in project pows
 
 /* Rules */
 

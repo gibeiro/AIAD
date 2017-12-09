@@ -13,7 +13,7 @@ beggining.
 
 +!join : beggining <- 
 	-beggining;
-	join(game);
+	join(manager);
 	+canNegotiation.
 
 /*Negotiation phase*/
@@ -35,7 +35,7 @@ beggining.
 	}.
 
 @pb1[atomic]
-+propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) <-
++propose(Comp,_,Phase) : not didPhase(Comp,Phase) & state(negotiation) & .my_name(Me) & owns(Me,Comp) <-
 	//wait for all proposals
 	.wait(500);
 	.findall(b(V,A),propose(Comp,V,Phase)[source(A)],List);

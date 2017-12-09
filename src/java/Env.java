@@ -18,7 +18,7 @@ public class Env extends Environment {
 	private Engine game;
 	private Interface gui;
 	
-	public static final Term jg = Literal.parseLiteral("join(game)");
+	public static final String jg = "join";
 	public static final Term ig = Literal.parseLiteral("init(game)");
 	public static final Term np = Literal.parseLiteral("next(phase)");
 	
@@ -51,11 +51,11 @@ public class Env extends Environment {
     public boolean executeAction(String agName, Structure action) {
         try {
         	//If action is to join the game
-        	if(action.equals(jg)) {
+        	if(action.getFunctor().equals(jg)) {
         		//TODO dont let join after game starts
-        		if(agName.contains("investor")) {
+        		if(action.getTerm(0).toString().equals("investor")) {
         			game.addInvestor(new Player(agName));
-        		}else if(agName.contains("manager")) {
+        		}else if(action.getTerm(0).toString().equals("manager")) {
         			game.addManager(new Player(agName));
         		}
         		logger.info(agName + " joined game");
