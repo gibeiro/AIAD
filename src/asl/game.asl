@@ -21,14 +21,11 @@ beggining.
 	.print("---Negotiation Phase---");
 	init(game);
 	!doState.
-	
-	
-+endSale(_) : .count(owns(Me,_),N) & .count(endSale(_),N2) & N = N2 <-
-	.my_name(Me);
-	.send(game,tell,doneSelling(Me)).
+
 	
 +!doState : state(negotiation) <- 
-	.wait(13000);
+	//Negotiation phase lasts for 5s
+	.wait(5000);
 	.print("---Investors Phase---");
 	next(phase);
 	!doState.
@@ -36,7 +33,7 @@ beggining.
 +!doState : state(investors) <- 
 	//print fluctuations
 	!doFluct;
-	!doIIncome;
+	!doIIncomes;
 	.wait(500);
 	.print("---Managers Phase---");
 	next(phase);
@@ -50,31 +47,35 @@ beggining.
 		.print(Color," companies fluctuation at ",Val,"(",Index,")");
 	}.
 @ii[atomic]
-+!doIIncome : true <-
++!doIIncomes : true <-
 	for(invests(Investor,Company,_)){
-		.wait(.count(ready(env),1),100);
-		?company(Company,Color,Mult);
-		?fluct(Color,Value,_);
-		Income = Value * Mult * 1000;
-		investorIncome(Investor,Income);
-		.wait(.count(ready(env),1),100);
-		.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
+		!doIIncome(Investor,Company)
 	}.
 	
++!doIIncome(Investor,Company):company(Company,Color,Mult) & fluct(Color,Value,_) <-
+	Income = Value * Mult * 1000;
+	investorIncome(Investor,Income);
+	.print("Income of ",Income," to ",Investor," for the ",Color," company ",Company);
+	.wait(.count(ready(env),1),100).
++!doIIncome(Investor,Company).
+	
 +!doState : state(managers) <- 
-	!doMIncome;
+	!doMIncomes;
 	.wait(500);
 	.print("---Payment Phase---");
 	next(phase);
 	!doState.
 
 @mi[atomic]
-+!doMIncome : true <-
-	for(player(investor,Me,_)){
-		for(invests(Me,Company,Price) & owns(Manager,Company)){
-			!tryPay(Me,Price,Manager,Company);
++!doMIncomes : true <-
+	for(player(investor,Inv,_)){
+		!doMIncome(Inv);
 	}		
-}
+.
++!doMIncome(Inv) <-
+	for(invests(Inv,Company,Price) & owns(Manager,Company)){
+		!tryPay(Inv,Price,Manager,Company);
+	}
 .
 +!tryPay(Inv,Price,Manager,Company) : player(_,Inv,Cash) <-
 	if(Cash >= Price){
@@ -84,8 +85,8 @@ beggining.
 		bankrupt(Inv);
 		.wait(.count(ready(env),1),100);
 	}.
-
-+!tryPay(Inv,Price,Manager,Company) : not player(_,Inv,Cash).
+//if it fails its because player went bankrupt
++!tryPay(Inv,Price,Manager,Company).
 	
 +!doState : state(payment) <- 
 	.wait(500);
@@ -116,7 +117,7 @@ beggining.
 	.findall(Name,player(manager,Name,_),LI);
 	.send(LI,tell,aucStart);
 	.wait(place_bid(_),2500);
-	.wait(500);
+	.wait(200);
 	if(.count(place_bid(_),NN) & NN > 0){
 		.findall(offer(V,M),place_bid(V)[source(M)],Offers);
 		.max(Offers,offer(Val,Man));
