@@ -119,7 +119,7 @@ beggining.
 	N2 = N*100;
 	if(N < 60){
 		.random(Rand);
-		Value = (Rand*20000+20000)*Mult;
+		Value = (Rand*20000+15000)*Mult;
 		if(Value < Cash){
 			.broadcast(tell,place_bid(Value))
 		}
