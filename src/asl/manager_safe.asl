@@ -166,7 +166,7 @@ risky(Color) :-
 //nao compra se nao tiver um indice muito bom
 +!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & not veryGoodValue(Color).
 //tenta comprar se for o mais rico e tiver comprado menos de 2
-+!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & richest(Me) & bought(N) & N < 2 <-
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & richest(Me) & bought(N) & N < 3 <-
 	?avgProfit(Color,Avg);
 	?maxProfit(Color,Max);
 	.random(Rand);
@@ -174,10 +174,10 @@ risky(Color) :-
 	if(Value < Cash & Value < Max){
 		.broadcast(tell,place_bid(Value))
 	}.
-//Nao compra se ja comprou 2 e é o mais rico
-+!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & richest(Me) & bought(N) & N >= 2.
+//Nao compra se ja comprou N e é o mais rico
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & richest(Me) & bought(N) & N >= 3.
 //tenta comprar se nao for o mais rico, mas dá uma oferta menor
-+!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & not richest(Me) & bought(N) & N < 1 <-
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & not richest(Me) & bought(N) & N < 2 <-
 	?avgProfit(Color,Avg);
 	?maxProfit(Color,Max);
 	.random(Rand);
