@@ -170,7 +170,7 @@ popular(Color) :-
 	-+bought(N+1);
 	-youWon.
 
-+!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & bought(N) & N >1.
++!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & player(_,Me,Cash) & bought(N) & N >2.
 //tenta comprar se for das 2 cores mais populares na fase anterior
 +!handleAuc(Game) : auction(Company,Color,Mult) & .my_name(Me) & popular(Color)  <-
 	?avgProfit(Color,Avg);

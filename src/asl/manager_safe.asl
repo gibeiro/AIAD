@@ -170,7 +170,7 @@ risky(Color) :-
 	?avgProfit(Color,Avg);
 	?maxProfit(Color,Max);
 	.random(Rand);
-	Value = Mult * ((Avg + Max)/2 + Rand * 7000);
+	Value = Mult * ((Avg + Max)/2 + Rand * 10000);
 	if(Value < Cash & Value < Max){
 		.broadcast(tell,place_bid(Value))
 	}.
@@ -181,7 +181,7 @@ risky(Color) :-
 	?avgProfit(Color,Avg);
 	?maxProfit(Color,Max);
 	.random(Rand);
-	Value = Mult * ((Avg + Max)/2 + Rand * 3000);
+	Value = Mult * ((Avg + Max)/2 + Rand * 7000);
 	if(Value < Cash & Value < Max){
 		.broadcast(tell,place_bid(Value))
 	}.

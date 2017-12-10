@@ -25,7 +25,7 @@ beggining.
 	
 +!doState : state(negotiation) <- 
 	//Negotiation phase lasts for 5s
-	.wait(7000);
+	.wait(6000);
 	.print("---Investors Phase---");
 	next(phase);
 	!doState.
@@ -89,7 +89,7 @@ beggining.
 +!tryPay(Inv,Price,Manager,Company).
 	
 +!doState : state(payment) <- 
-	.wait(500);
+	.wait(1000);
 	.print("---Auction Phase---");
 	next(phase);
 	!doState.
