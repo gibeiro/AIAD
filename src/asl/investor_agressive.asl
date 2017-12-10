@@ -103,22 +103,22 @@ risky(Color) :-
 	.broadcast(tell,propose(Company,Offer,Phase));
 .
 
-//Se nao for o mais pobre, tentar retirar as empresas seguras ao mais pobre
-+!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & safe(Color) &  propose(Company,_,Phase-1)[source(Player)] & poorest(Player) <-
-	?maxProfit(Color,Max);
-	.random(N);
-	Offer = (MinPrice + N * 2000)*Mult;
-	if(Offer < (Max-1000) * Mult){
-		.broadcast(tell,propose(Company,Offer,Phase))
-	}
-.
-
 //Se for o mais rico, tentar retirar empresas de alto indice a todos os outros
 +!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & richest(Me) & goodValue(Color) &  propose(Company,_,Phase-1)[source(Player)] & not richest(Player) <-
 	?maxProfit(Color,Max);
 	.random(N);
-	Offer = (MinPrice + N * 3000)*Mult;
-	if(Offer < (Max+2000) * Mult){
+	Offer = (MinPrice + N * 7000)*Mult;
+	if(Offer < (Max+10000) * Mult){
+		.broadcast(tell,propose(Company,Offer,Phase))
+	}
+.
+
+//Se nao for o mais pobre, tentar retirar as empresas seguras ao mais pobre
++!handleSelling(Manager,Company,MinPrice,Phase) : .my_name(Me) & company(Company,Color,Mult) & not Phase = 1 & not poorest(Me) & safe(Color) &  propose(Company,_,Phase-1)[source(Player)] & poorest(Player) <-
+	?maxProfit(Color,Max);
+	.random(N);
+	Offer = (MinPrice + N * 10000)*Mult;
+	if(Offer < (Max) * Mult){
 		.broadcast(tell,propose(Company,Offer,Phase))
 	}
 .
